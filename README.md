@@ -5,4 +5,5 @@ This is a 1-armed bandit simulator for the brand Birchbox. build with oF 0.9.8 o
 ### Required addons:
 
 ofxGui - Comes with oF
+
 [ofxIntegrator](https://github.com/Bentleyj/ofxIntegrator)
