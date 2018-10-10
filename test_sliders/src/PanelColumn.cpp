@@ -85,7 +85,8 @@ void PanelColumn::stop() {
 // Start the motion of the lead panel with it's initial velocity.
 void PanelColumn::start() {
 	if (panels.size() > 0) {
-		panels[0]->vel = emitter.initialVel;
+		panels[0]->vel = ofVec2f(0, -10);
+		panels[0]->acc = ofVec2f(0, emitter.initialVel.y / 80.0);
 		panels[0]->stopped = false;
 		stopped = false;
 	}
