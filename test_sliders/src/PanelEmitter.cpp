@@ -20,6 +20,10 @@ Panel* PanelEmitter::createPanel() {
 
 	p->pos = pos;
 
+	p->pos.attraction = 0.5;
+
+	p->pos.damping = 0.8;
+
 	p->width = width;
 
 	p->height = height;
