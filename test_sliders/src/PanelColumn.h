@@ -9,20 +9,30 @@
 
 class PanelColumn {
 public:
-	PanelColumn() {};
-	~PanelColumn() {};
+	PanelColumn() {
+		finalPanel = nullptr;
+	}
+	~PanelColumn() {}
 
 	void update();
 	void draw();
 	void createPanel();
+	void createFinalPanel();
 	void removeFirstPanel();
 	void stop();
 	void start();
+	void spin(int colIndex, int imgIndex);
 
 	PanelEmitter emitter;
 	vector<Panel*> panels;
 
-	float killDistance;
+	Panel* finalPanel;
+	int stopColIndex = 0;
+	int stopImgIndex = 0;
 
+	float spinStartTime;
+	float spinDuration;
+
+	float killDistance;
 private:
 };

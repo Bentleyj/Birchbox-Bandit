@@ -5,12 +5,21 @@ void PanelColumn::update() {
 	if (panels.size() > 0) {
 		Panel* lastPanel = panels[panels.size() - 1];
 		if (lastPanel->pos.val.y > emitter.pos.y + emitter.height) {
-			lastPanel->pos.val.y = emitter.pos.y + emitter.height;
+			if (ofGetElapsedTimef() - spinStartTime > spinDuration) {
+				createFinalPanel();
+				spinStartTime = ofGetElapsedTimef();
+			}
 			createPanel();
 		}
 		Panel* firstPanel = panels[0];
 		if (firstPanel->pos.val.y > killDistance) {
 			removeFirstPanel();
+		}
+		if (finalPanel != nullptr) {
+			if (finalPanel->pos.val.y > finalPanel->height - emitter.initialVel.y) {
+				stop();
+				finalPanel = nullptr;
+			}
 		}
 	}
 	emitter.update();
@@ -35,6 +44,15 @@ void PanelColumn::createPanel() {
 	}
 }
 
+void PanelColumn::createFinalPanel() {
+	Panel* p = emitter.createPanel(stopColIndex, stopImgIndex);
+	finalPanel = p;
+	panels.push_back(p);
+	if (panels.size() > 1) {
+		panels[panels.size() - 1]->nextPanel = panels[panels.size() - 2];
+	}
+}
+
 // remove the first panel from the list, like a pop_front command for a vector.
 // Also don't forget to set the nextPanel field of the new first panel to nullptr.
 void PanelColumn::removeFirstPanel() {
@@ -47,14 +65,25 @@ void PanelColumn::removeFirstPanel() {
 	}
 }
 
+void PanelColumn::spin(int colIndex, int imgIndex) {
+	stopColIndex = colIndex;
+	stopImgIndex = imgIndex;
+	spinStartTime = ofGetElapsedTimef();
+	start();
+}
+
 // Stop the motion of the lead panel and have it settle in to position.
 void PanelColumn::stop() {
-	panels[0]->pos.target(ofVec2f(emitter.pos.x, killDistance - 10));
-	panels[0]->stopped = true;
+	if (panels.size() > 0) {
+		panels[0]->pos.target(ofVec2f(emitter.pos.x, killDistance - 10));
+		panels[0]->stopped = true;
+	}
 }
 
 // Start the motion of the lead panel with it's initial velocity.
 void PanelColumn::start() {
-	panels[0]->vel = emitter.initialVel;
-	panels[0]->stopped = false;
+	if (panels.size() > 0) {
+		panels[0]->vel = emitter.initialVel;
+		panels[0]->stopped = false;
+	}
 }

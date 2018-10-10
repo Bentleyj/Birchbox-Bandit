@@ -10,6 +10,8 @@ class ofApp : public ofBaseApp{
 		void setup();
 		void update();
 		void draw();
+		void startWinningSpin();
+		void startLosingSpin();
 
 		void keyPressed(int key);
 		void keyReleased(int key);

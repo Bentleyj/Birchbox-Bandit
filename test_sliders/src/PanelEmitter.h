@@ -20,6 +20,8 @@ public:
 	void update();
 	void draw();
 	Panel* createPanel();
+	Panel* createPanel(int colIndex, int imgIndex);
+
 	ofVec2f pos;
 	ofVec2f initialVel;
 	ofVec2f initialAcc;

@@ -38,3 +38,27 @@ Panel* PanelEmitter::createPanel() {
 
 	return p;
 }
+
+Panel* PanelEmitter::createPanel(int colIndex, int imgIndex) {
+	Panel* p = new Panel();
+
+	p->pos = pos;
+
+	p->width = width;
+
+	p->height = height;
+
+	p->maxVel = initialVel;
+
+	p->vel = initialVel;
+
+	p->acc = initialAcc;
+
+	p->col = palette[colIndex];
+
+	p->img = (*images)[imgIndex];
+
+	p->stopped = false;
+
+	return p;
+}
