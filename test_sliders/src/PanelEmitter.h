@@ -1,11 +1,15 @@
 #pragma once
 
+// A Panel Emitter creates new panels that go in to the panel column. It contains a list of all the colors
+// And images that a panel can have and creates them randomly or in winning order.
+
 #include "ofMain.h"
 #include "Panel.h"
 
 class PanelEmitter {
 public:
 	PanelEmitter() {
+		palette.resize(5);
 		palette[0] = ofColor(255, 173, 173);
 		palette[1] = ofColor(255, 239, 170);
 		palette[2] = ofColor(190, 255, 194);
@@ -21,7 +25,8 @@ public:
 	ofVec2f initialAcc;
 	float width, height;
 
-	ofColor palette[5];
+	vector<ofColor> palette;
+	vector<ofImage*>* images;
 
 private:
 };

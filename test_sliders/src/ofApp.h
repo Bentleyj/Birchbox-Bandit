@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "PanelColumn.h"
+#include "ofxNestedFileLoader.h"
 
 class ofApp : public ofBaseApp{
 
@@ -23,6 +24,8 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 
 		vector<PanelColumn* > panelColumns;
+
+		vector<ofImage*> productImages;
 
 		float panelHeight;
 		float panelWidth;

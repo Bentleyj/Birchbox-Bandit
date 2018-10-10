@@ -1,9 +1,11 @@
 #include "PanelEmitter.h"
 
+// Update is empty for now.
 void PanelEmitter::update() {
 
 }
 
+// Draw a debug version of our particle emitter
 void PanelEmitter::draw() {
 	ofPushStyle();
 	ofNoFill();
@@ -12,6 +14,7 @@ void PanelEmitter::draw() {
 	ofPopStyle();
 }
 
+// Instantiate a panel on the heap and return a pointer to it.
 Panel* PanelEmitter::createPanel() {
 	Panel* p = new Panel();
 
@@ -23,13 +26,13 @@ Panel* PanelEmitter::createPanel() {
 
 	p->maxVel = initialVel;
 
-	p->deathThreshold = ofGetHeight() + height;
-
 	p->vel = initialVel;
 
 	p->acc = initialAcc;
 
 	p->col = palette[int(ofRandom(5))];
+
+	p->img = (*images)[int(ofRandom(images->size()))];
 
 	p->stopped = false;
 

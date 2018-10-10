@@ -7,6 +7,14 @@ void ofApp::setup(){
 	panelWidth = ofGetWidth() / 3.0;
 	panelHeight = ofGetHeight() / 3.0;
 
+	ofxNestedFileLoader loader;
+	vector<string> imgPaths = loader.load("productImages");
+	for (int i = 0; i < imgPaths.size(); i++) {
+		ofImage* img = new ofImage();
+		img->load(imgPaths[i]);
+		productImages.push_back(img);
+	}
+
 	buffer.allocate(ofGetWidth(), ofGetHeight() * 2);
 	PanelColumn* col1 = new PanelColumn();
 	PanelColumn* col2 = new PanelColumn();
@@ -22,6 +30,7 @@ void ofApp::setup(){
 		panelColumns[i]->emitter.width = panelWidth;
 		panelColumns[i]->emitter.height = panelHeight;
 		panelColumns[i]->killDistance = ofGetHeight() + panelHeight + 10;
+		panelColumns[i]->emitter.images = &productImages;
 	}
 }
 
@@ -47,6 +56,7 @@ void ofApp::draw(){
 	ofNoFill();
 	ofSetColor(0);
 	ofDrawRectangle(0, 0, buffer.getWidth(), buffer.getHeight());
+	ofSetLineWidth(5);
 	ofDrawRectangle(0, buffer.getHeight()/4.0, buffer.getWidth(), buffer.getHeight()/2.0);
 	ofPopStyle();
 	buffer.end();
