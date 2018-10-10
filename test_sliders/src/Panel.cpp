@@ -25,12 +25,17 @@ void Panel::update() {
 // Draw the panel.
 void Panel::draw() {
 	ofPushStyle();
+	ofPushMatrix();
 	ofSetColor(col);
-	ofDrawRectangle(pos.val, width, height);
+	ofTranslate(pos.val);
+	ofDrawRectangle(ofVec2f(0, 0), width, height);
 	ofSetColor(255);
-	img->draw(pos.val.x, pos.val.y, width, height);
+	float scale = height / img->getHeight();
+	float w = img->getWidth() * scale;
+	img->draw((width - w)/2, 0, w, height);
 	ofNoFill();
 	ofSetColor(0);
-	ofDrawRectangle(pos.val, width, height);
+	ofDrawRectangle(ofVec2f(0, 0), width, height);
+	ofPopMatrix();
 	ofPopStyle();
 }
