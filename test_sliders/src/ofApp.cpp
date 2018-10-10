@@ -53,7 +53,6 @@ void ofApp::draw() {
 	}
 	ofPopMatrix();
 
-	ofPushStyle();
 	//ofNoFill();
 	//ofSetColor(0);
 	//ofDrawRectangle(0, 0, buffer.getWidth(), buffer.getHeight());
