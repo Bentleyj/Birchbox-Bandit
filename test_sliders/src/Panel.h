@@ -1,5 +1,7 @@
 #pragma once
 
+// A Panel describes a single 
+
 #include "ofMain.h"
 #include "ofxIntegrator.h"
 
