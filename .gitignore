@@ -94,12 +94,14 @@ Desktop.ini
 # Content
 *.mov
 *.mp3
+*.wav
 *.jpg
 *.png
 *.jpeg
 *.jpg
 *.gif
 *.avi
+*.docx
 
 # Visual C++ cache files
 ipch/

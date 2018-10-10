@@ -15,6 +15,10 @@ void ofApp::setup(){
 		productImages.push_back(img);
 	}
 
+	winSound.load("sounds/Big Win/big win.mp3");
+	loseSound.load("sounds/No Win/342886__michael-kur95__time-s-up-03.wav");
+	spinningSound.load("sounds/Tension Builder/slot_machine_spin.mp3");
+
 	buffer.allocate(ofGetWidth(), ofGetHeight() * 2);
 	PanelColumn* col1 = new PanelColumn();
 	PanelColumn* col2 = new PanelColumn();
@@ -32,13 +36,26 @@ void ofApp::setup(){
 		panelColumns[i]->killDistance = ofGetHeight() + panelHeight + 10;
 		panelColumns[i]->emitter.images = &productImages;
 		panelColumns[i]->spinDuration = 2.0 + i;
+		panelColumns[i]->stopSound.load("sounds/Clicks/chip_money.mp3");
 	}
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
+	bool allStopped = true;
 	for (int i = 0; i < panelColumns.size(); i++) {
 		panelColumns[i]->update();
+		if (!panelColumns[i]->stopped) {
+			allStopped = false;
+		}
+	}
+	if (winning && allStopped && spinning) {
+		winSound.play();
+		spinning = false;
+	}
+	else if (!winning && allStopped && spinning) {
+		loseSound.play();
+		spinning = false;
 	}
 }
 
@@ -71,6 +88,9 @@ void ofApp::startWinningSpin() {
 	for (int i = 0; i < panelColumns.size(); i++) {
 		panelColumns[i]->spin(colIndex, imgIndex);
 	}
+	spinning = true;
+	winning = true;
+	spinningSound.play();
 }
 
 //--------------------------------------------------------------
@@ -92,6 +112,9 @@ void ofApp::startAlmostWinningSpin() {
 		}
 		panelColumns[i]->spin(colIndex, imgIndex);
 	}
+	spinning = true;
+	winning = false;
+	spinningSound.play();
 }
 
 //--------------------------------------------------------------
@@ -111,6 +134,9 @@ void ofApp::startLosingSpin() {
 		}
 		panelColumns[i]->spin(colIndex, imgIndex);
 	}
+	spinning = true;
+	winning = false;
+	spinningSound.play();
 }
 
 //--------------------------------------------------------------

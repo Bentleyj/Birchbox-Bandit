@@ -11,6 +11,7 @@ class PanelColumn {
 public:
 	PanelColumn() {
 		finalPanel = nullptr;
+		stopped = true;
 	}
 	~PanelColumn() {}
 
@@ -23,12 +24,15 @@ public:
 	void start();
 	void spin(int colIndex, int imgIndex);
 
+	ofSoundPlayer stopSound;
+
 	PanelEmitter emitter;
 	vector<Panel*> panels;
 
 	Panel* finalPanel;
 	int stopColIndex = 0;
 	int stopImgIndex = 0;
+	bool stopped;
 
 	float spinStartTime;
 	float spinDuration;
