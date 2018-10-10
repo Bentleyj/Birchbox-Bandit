@@ -77,6 +77,8 @@ void PanelColumn::stop() {
 	if (panels.size() > 0) {
 		panels[0]->pos.target(ofVec2f(emitter.pos.x, killDistance - 10));
 		panels[0]->stopped = true;
+		stopped = true;
+		stopSound.play();
 	}
 }
 
@@ -85,5 +87,6 @@ void PanelColumn::start() {
 	if (panels.size() > 0) {
 		panels[0]->vel = emitter.initialVel;
 		panels[0]->stopped = false;
+		stopped = false;
 	}
 }

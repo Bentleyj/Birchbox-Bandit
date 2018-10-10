@@ -30,6 +30,13 @@ class ofApp : public ofBaseApp{
 
 		vector<ofImage*> productImages;
 
+		ofSoundPlayer winSound;
+		ofSoundPlayer loseSound;
+		ofSoundPlayer spinningSound;
+
+		bool winning;
+		bool spinning;
+
 		float panelHeight;
 		float panelWidth;
 
