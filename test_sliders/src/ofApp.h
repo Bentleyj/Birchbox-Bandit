@@ -12,6 +12,7 @@ class ofApp : public ofBaseApp{
 		void draw();
 		void startWinningSpin();
 		void startLosingSpin();
+		void startAlmostWinningSpin();
 
 		void keyPressed(int key);
 		void keyReleased(int key);

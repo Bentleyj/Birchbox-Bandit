@@ -25,7 +25,7 @@ void ofApp::setup(){
 	panelColumns.push_back(col3);
 
 	for (int i = 0; i < panelColumns.size(); i++) {
-		panelColumns[i]->emitter.initialVel = ofVec2f(0, 10);
+		panelColumns[i]->emitter.initialVel = ofVec2f(0, 80);
 		panelColumns[i]->emitter.pos = ofVec3f(i * panelWidth, -panelHeight * 2);
 		panelColumns[i]->emitter.width = panelWidth;
 		panelColumns[i]->emitter.height = panelHeight;
@@ -44,25 +44,25 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-	buffer.begin();
-	ofClear(0);
+	//buffer.begin();
+	//ofClear(0);
 	ofPushMatrix();
-	ofTranslate(0, buffer.getHeight() / 4.0);
+	//ofTranslate(0, buffer.getHeight() / 4.0);
 	for (int i = 0; i < panelColumns.size(); i++) {
 		panelColumns[i]->draw();
 	}
 	ofPopMatrix();
 
 	ofPushStyle();
-	ofNoFill();
-	ofSetColor(0);
-	ofDrawRectangle(0, 0, buffer.getWidth(), buffer.getHeight());
-	ofSetLineWidth(5);
-	ofDrawRectangle(0, buffer.getHeight() / 4.0, buffer.getWidth(), buffer.getHeight() / 2.0);
-	ofPopStyle();
-	buffer.end();
+	//ofNoFill();
+	//ofSetColor(0);
+	//ofDrawRectangle(0, 0, buffer.getWidth(), buffer.getHeight());
+	//ofSetLineWidth(5);
+	//ofDrawRectangle(0, buffer.getHeight() / 4.0, buffer.getWidth(), buffer.getHeight() / 2.0);
+	//ofPopStyle();
+	//buffer.end();
 
-	buffer.draw(0, 0, buffer.getWidth() / 2, buffer.getHeight() / 2);
+	//buffer.draw(0, 0, buffer.getWidth() / 2, buffer.getHeight() / 2);
 }
 
 //--------------------------------------------------------------
@@ -75,36 +75,62 @@ void ofApp::startWinningSpin() {
 }
 
 //--------------------------------------------------------------
-void ofApp::startLosingSpin() {
+void ofApp::startAlmostWinningSpin() {
+	int colIndex = int(ofRandom(5));
+	int imgIndex = int(ofRandom(productImages.size()));
 	for (int i = 0; i < panelColumns.size(); i++) {
-		int colIndex = int(ofRandom(5));
-		int imgIndex = int(ofRandom(productImages.size()));
+		if (i == panelColumns.size() - 1) {
+			int newColIndex = int(ofRandom(5));
+			int newImgIndex = int(ofRandom(productImages.size()));
+			if (colIndex == newColIndex && imgIndex == newImgIndex) {
+				colIndex = (newColIndex + 1) % 5;
+				imgIndex = (newImgIndex + 1) % productImages.size();
+			}
+			else {
+				colIndex = newColIndex;
+				imgIndex = newImgIndex;
+			}
+		}
+		panelColumns[i]->spin(colIndex, imgIndex);
+	}
+}
+
+//--------------------------------------------------------------
+void ofApp::startLosingSpin() {
+	int colIndex = int(ofRandom(5));
+	int imgIndex = int(ofRandom(productImages.size()));
+	for (int i = 0; i < panelColumns.size(); i++) {
+		int newColIndex = int(ofRandom(5));
+		int newImgIndex = int(ofRandom(productImages.size()));
+		if (colIndex == newColIndex && imgIndex == newImgIndex) {
+			colIndex = (newColIndex + 1) % 5;
+			imgIndex = (newImgIndex + 1) % productImages.size();
+		}
+		else {
+			colIndex = newColIndex;
+			imgIndex = newImgIndex;
+		}
 		panelColumns[i]->spin(colIndex, imgIndex);
 	}
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-	if (key == 'w') {
+	if (key == ' ') {
 		for (int i = 0; i < panelColumns.size(); i++) {
 			panelColumns[i]->createPanel();
 		}
-		startWinningSpin();
-	}
-	if (key == 'l') {
-		for (int i = 0; i < panelColumns.size(); i++) {
-			panelColumns[i]->createPanel();
+		if (ofRandom(1) > 0.2) {
+			if (ofRandom(1) > 0.4) {
+				startLosingSpin();
+			}
+			else {
+				startAlmostWinningSpin();
+			}
 		}
-		startLosingSpin();
-	}
-	if (key == '0') {
-		panelColumns[0]->stop();
-	}
-	if (key == '1') {
-		panelColumns[1]->stop();
-	}	
-	if (key == '2') {
-		panelColumns[2]->stop();
+		else {
+			startWinningSpin();
+		}
 	}
 }
 
