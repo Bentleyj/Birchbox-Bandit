@@ -5,7 +5,7 @@
 void ofApp::setup(){
 
 	panelWidth = ofGetWidth() / 3.0;
-	panelHeight = ofGetHeight() / 3.0;
+	panelHeight = ofGetHeight() / 2.0;
 
 	ofxNestedFileLoader loader;
 	vector<string> imgPaths = loader.load("productImages");
@@ -29,11 +29,11 @@ void ofApp::setup(){
 	panelColumns.push_back(col3);
 
 	for (int i = 0; i < panelColumns.size(); i++) {
-		panelColumns[i]->emitter.initialVel = ofVec2f(0, 80);
-		panelColumns[i]->emitter.pos = ofVec3f(i * panelWidth, -panelHeight * 2);
+		panelColumns[i]->emitter.initialVel = ofVec2f(0, 200);
+		panelColumns[i]->emitter.pos = ofVec3f(i * panelWidth, -panelHeight * 1.5);
 		panelColumns[i]->emitter.width = panelWidth;
 		panelColumns[i]->emitter.height = panelHeight;
-		panelColumns[i]->killDistance = ofGetHeight() + panelHeight + 10;
+		panelColumns[i]->killDistance = ofGetHeight() + panelHeight * 1.5 + 10;
 		panelColumns[i]->emitter.images = &productImages;
 		panelColumns[i]->spinDuration = 2.0 + i;
 		panelColumns[i]->stopSound.load("sounds/Clicks/chip_money.mp3");

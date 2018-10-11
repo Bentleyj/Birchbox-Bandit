@@ -16,7 +16,7 @@ void PanelColumn::update() {
 			removeFirstPanel();
 		}
 		if (finalPanel != nullptr) {
-			if (finalPanel->pos.val.y > finalPanel->height - emitter.initialVel.y) {
+			if (finalPanel->pos.val.y > finalPanel->height / 2.0 - emitter.initialVel.y) {
 				stop();
 				finalPanel = nullptr;
 			}
@@ -86,7 +86,7 @@ void PanelColumn::stop() {
 void PanelColumn::start() {
 	if (panels.size() > 0) {
 		panels[0]->vel = ofVec2f(0, -10);
-		panels[0]->acc = ofVec2f(0, emitter.initialVel.y / 80.0);
+		panels[0]->acc = ofVec2f(0, emitter.initialVel.y / 200.0);
 		panels[0]->stopped = false;
 		stopped = false;
 	}
