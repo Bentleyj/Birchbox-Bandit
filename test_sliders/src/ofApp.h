@@ -34,6 +34,8 @@ class ofApp : public ofBaseApp{
 		ofSoundPlayer loseSound;
 		ofSoundPlayer spinningSound;
 
+		ofShader fade;
+
 		bool winning;
 		bool spinning;
 

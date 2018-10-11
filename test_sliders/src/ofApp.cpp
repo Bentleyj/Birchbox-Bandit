@@ -7,6 +7,8 @@ void ofApp::setup(){
 	panelWidth = ofGetWidth() / 3.0;
 	panelHeight = ofGetHeight() / 2.0;
 
+	fade.load("shaders/fade");
+
 	ofxNestedFileLoader loader;
 	vector<string> imgPaths = loader.load("productImages");
 	for (int i = 0; i < imgPaths.size(); i++) {
@@ -19,7 +21,7 @@ void ofApp::setup(){
 	loseSound.load("sounds/No Win/342886__michael-kur95__time-s-up-03.wav");
 	spinningSound.load("sounds/Tension Builder/slot_machine_spin.mp3");
 
-	buffer.allocate(ofGetWidth(), ofGetHeight() * 2);
+	buffer.allocate(ofGetWidth(), ofGetHeight());
 	PanelColumn* col1 = new PanelColumn();
 	PanelColumn* col2 = new PanelColumn();
 	PanelColumn* col3 = new PanelColumn();
@@ -61,14 +63,20 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-	//buffer.begin();
-	//ofClear(0);
+	buffer.begin();
+	ofClear(0);
 	ofPushMatrix();
-	//ofTranslate(0, buffer.getHeight() / 4.0);
 	for (int i = 0; i < panelColumns.size(); i++) {
 		panelColumns[i]->draw();
 	}
 	ofPopMatrix();
+	buffer.end();
+
+	fade.begin();
+	fade.setUniformTexture("inputTexture", buffer.getTexture(), 0);
+	fade.setUniform2f("resolution", ofGetWidth(), ofGetHeight());
+	ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+	fade.end();
 
 	//ofNoFill();
 	//ofSetColor(0);
