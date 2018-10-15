@@ -72,19 +72,25 @@ void ofApp::update(){
 			float a = ofRandom(360);
 			float offsetX = ofGetWidth()/2;
 			float offsetY = ofGetHeight() / 2;
+			float dir = ofRandom(0, 360);
+			float mag = 0;
+
 			if (ofRandom(1) > 0.5) {
 				offsetX = ofGetWidth() / 2;
+				mag = ofRandom(50, 80);
 			}
 			else if (ofRandom(1) > 0.5) {
 				offsetX = ofGetWidth() / 6;
+				mag = ofRandom(30, 60);
 			}
 			else {
 				offsetX = ofGetWidth() * 5 / 6;
+				mag = ofRandom(30, 60);
+
 			}
 			float x = offsetX + r * cos(a) - maxRad/2.0;
 			float y = offsetY + r * sin(a) - maxRad/2.0;
-			float dir = ofRandom(0, 360);
-			float mag = ofRandom(50, 80);
+
 			float dx = mag * cos(dir);
 			float dy = mag * sin(dir);
 			float dxx = 0.0;
