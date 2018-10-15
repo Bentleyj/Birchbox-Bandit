@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "PanelColumn.h"
 #include "ofxNestedFileLoader.h"
+#include "Sparticles.h"
 
 class ofApp : public ofBaseApp{
 
@@ -29,6 +30,8 @@ class ofApp : public ofBaseApp{
 		vector<PanelColumn* > panelColumns;
 
 		vector<ofImage*> productImages;
+
+		Sparticles sparticles;
 
 		ofSoundPlayer winSound;
 		ofSoundPlayer loseSound;

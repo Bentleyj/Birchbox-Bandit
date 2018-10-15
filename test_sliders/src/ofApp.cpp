@@ -7,6 +7,8 @@ void ofApp::setup(){
 	panelWidth = ofGetWidth() / 3.0;
 	panelHeight = ofGetHeight() / 2.0;
 
+	sparticles.setup();
+
 	frame.load("images/Frame_001.png");
 
 	fade.load("shaders/fade");
@@ -64,11 +66,38 @@ void ofApp::update(){
 	if (winning && allStopped && spinning) {
 		winSound.play();
 		spinning = false;
+		for (int i = 0; i < 1000; i++) {
+			float maxRad = 50;
+			float r = ofRandom(maxRad);
+			float a = ofRandom(360);
+			float offsetX = 0;
+			float offsetY = ofGetHeight() / 2;
+			if (ofRandom(1) > 0.5) {
+				offsetX = ofGetWidth() / 2;
+			}
+			else if (ofRandom(1) > 0.5) {
+				offsetX = ofGetWidth() / 6;
+			}
+			else {
+				offsetX = ofGetWidth() * 5 / 6;
+			}
+			float x = offsetX + r * cos(a) - maxRad/2.0;
+			float y = offsetY + r * sin(a) - maxRad/2.0;
+			float dir = ofRandom(0, 360);
+			float mag = ofRandom(50, 80);
+			float dx = mag * cos(dir);
+			float dy = mag * sin(dir);
+			float dxx = 0.0;
+			float dyy = ofRandom(0.5, 2.0);
+			sparticles.spawn(x, y, dx, dy, dxx, dyy);
+		}
+
 	}
 	else if (!winning && allStopped && spinning) {
 		loseSound.play();
 		spinning = false;
 	}
+	sparticles.update();
 }
 
 //--------------------------------------------------------------
@@ -80,6 +109,7 @@ void ofApp::draw() {
 		panelColumns[i]->draw();
 		frame.draw(panelColumns[i]->emitter.pos.x, 0);
 	}
+	sparticles.draw(2.0, 2.0);
 	ofPopMatrix();
 	buffer.end();
 
