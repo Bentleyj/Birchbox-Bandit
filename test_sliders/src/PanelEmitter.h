@@ -27,6 +27,8 @@ public:
 	ofVec2f initialAcc;
 	float width, height;
 
+	ofSoundPlayer spawnSound;
+
 	vector<ofColor> palette;
 	vector<ofImage*>* images;
 

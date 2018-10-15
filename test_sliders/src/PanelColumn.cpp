@@ -34,6 +34,7 @@ void PanelColumn::draw() {
 	for (int i = 0; i < panels.size(); i++) {
 		panels[i]->draw();
 	}
+	//frame->draw(emitter.pos.x, emitter.pos.y + emitter.height * 1.5);
 }
 
 // create a new panel and add it to your list of panels.

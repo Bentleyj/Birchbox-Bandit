@@ -32,7 +32,9 @@ class ofApp : public ofBaseApp{
 
 		ofSoundPlayer winSound;
 		ofSoundPlayer loseSound;
-		ofSoundPlayer spinningSound;
+		ofSoundPlayer spinningSound, spinningSound2;
+
+		ofImage frame;
 
 		ofShader fade;
 

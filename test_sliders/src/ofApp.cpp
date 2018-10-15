@@ -7,6 +7,8 @@ void ofApp::setup(){
 	panelWidth = ofGetWidth() / 3.0;
 	panelHeight = ofGetHeight() / 2.0;
 
+	frame.load("images/Frame_001.png");
+
 	fade.load("shaders/fade");
 
 	ofxNestedFileLoader loader;
@@ -17,9 +19,10 @@ void ofApp::setup(){
 		productImages.push_back(img);
 	}
 
-	winSound.load("sounds/Big Win/big win.mp3");
+	winSound.load("sounds/Big Win/JackPot SFX 4 (MP3).mp3");
 	loseSound.load("sounds/No Win/342886__michael-kur95__time-s-up-03.wav");
-	spinningSound.load("sounds/Tension Builder/slot_machine_spin.mp3");
+	//spinningSound.load("sounds/Tension Builder/slot_machine_spin.mp3");
+	spinningSound.load("sounds/Tension Builder/TensionBuildBongosSlot.wav");
 
 	buffer.allocate(ofGetWidth(), ofGetHeight());
 	PanelColumn* col1 = new PanelColumn();
@@ -39,7 +42,14 @@ void ofApp::setup(){
 		panelColumns[i]->emitter.images = &productImages;
 		panelColumns[i]->spinDuration = 2.0 + i;
 		panelColumns[i]->stopSound.load("sounds/Clicks/chip_money.mp3");
+		panelColumns[i]->frame = &frame;
 	}
+
+	for (int i = 0; i < panelColumns.size(); i++) {
+		panelColumns[i]->createPanel();
+	}
+
+	//panelColumns[2]->emitter.spawnSound.load("sounds/Clicks/click 2.wav");
 }
 
 //--------------------------------------------------------------
@@ -68,15 +78,18 @@ void ofApp::draw() {
 	ofPushMatrix();
 	for (int i = 0; i < panelColumns.size(); i++) {
 		panelColumns[i]->draw();
+		frame.draw(panelColumns[i]->emitter.pos.x, 0);
 	}
 	ofPopMatrix();
 	buffer.end();
 
-	fade.begin();
-	fade.setUniformTexture("inputTexture", buffer.getTexture(), 0);
-	fade.setUniform2f("resolution", ofGetWidth(), ofGetHeight());
-	ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
-	fade.end();
+	buffer.draw(0, 0);
+
+	//fade.begin();
+	//fade.setUniformTexture("inputTexture", buffer.getTexture(), 0);
+	//fade.setUniform2f("resolution", ofGetWidth(), ofGetHeight());
+	//ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+	//fade.end();
 
 	//ofNoFill();
 	//ofSetColor(0);
@@ -150,9 +163,6 @@ void ofApp::startLosingSpin() {
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
 	if (key == ' ') {
-		for (int i = 0; i < panelColumns.size(); i++) {
-			panelColumns[i]->createPanel();
-		}
 		if (ofRandom(1) > 0.2) {
 			if (ofRandom(1) > 0.4) {
 				startLosingSpin();
@@ -164,6 +174,12 @@ void ofApp::keyPressed(int key){
 		else {
 			startWinningSpin();
 		}
+	}
+	else if (key == 'w') {
+		startWinningSpin();
+	}
+	else if (key == 'l') {
+		startLosingSpin();
 	}
 }
 

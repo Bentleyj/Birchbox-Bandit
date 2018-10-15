@@ -40,6 +40,10 @@ Panel* PanelEmitter::createPanel() {
 
 	p->stopped = false;
 
+	if (spawnSound.isLoaded()) {
+		spawnSound.play();
+	}
+
 	return p;
 }
 
