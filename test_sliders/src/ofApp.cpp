@@ -84,7 +84,7 @@ void ofApp::update(){
 			float x = offsetX + r * cos(a) - maxRad/2.0;
 			float y = offsetY + r * sin(a) - maxRad/2.0;
 			float dir = ofRandom(0, 360);
-			float mag = ofRandom(50, 80);
+			float mag = ofRandom(0, 80);
 			float dx = mag * cos(dir);
 			float dy = mag * sin(dir);
 			float dxx = 0.0;
