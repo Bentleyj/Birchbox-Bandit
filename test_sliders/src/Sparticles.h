@@ -62,6 +62,7 @@ private:
     float *rotations;
     float *rotationSpeeds;
     float *sizes;
+	int delay;
     int *ages;
 	vector<ofImage*> images;
     vector<ofImage*> imageLibrary;

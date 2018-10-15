@@ -24,7 +24,7 @@ void ofApp::setup(){
 	winSound.load("sounds/Big Win/JackPot SFX 4 (MP3).mp3");
 	loseSound.load("sounds/No Win/342886__michael-kur95__time-s-up-03.wav");
 	//spinningSound.load("sounds/Tension Builder/slot_machine_spin.mp3");
-	spinningSound.load("sounds/Tension Builder/TensionBuildBongosSlot.wav");
+	spinningSound.load("sounds/Tension Builder/TensionBuildBongosSlotButton2.wav");
 
 	buffer.allocate(ofGetWidth(), ofGetHeight());
 	PanelColumn* col1 = new PanelColumn();
@@ -54,6 +54,40 @@ void ofApp::setup(){
 	//panelColumns[2]->emitter.spawnSound.load("sounds/Clicks/click 2.wav");
 }
 
+void ofApp::spawnParticles() {
+	for (int i = 0; i < 1000; i++) {
+		float maxRad = 50;
+		float r = ofRandom(maxRad);
+		float a = ofRandom(360);
+		float offsetX = ofGetWidth() / 2;
+		float offsetY = ofGetHeight() / 2;
+		float dir = ofRandom(0, 360);
+		float mag = 0;
+
+		if (ofRandom(1) > 0.5) {
+			offsetX = ofGetWidth() / 2;
+			mag = ofRandom(50, 80);
+		}
+		else if (ofRandom(1) > 0.5) {
+			offsetX = ofGetWidth() / 6;
+			mag = ofRandom(30, 60);
+		}
+		else {
+			offsetX = ofGetWidth() * 5 / 6;
+			mag = ofRandom(30, 60);
+
+		}
+		float x = offsetX + r * cos(a) - maxRad / 2.0;
+		float y = offsetY + r * sin(a) - maxRad / 2.0;
+
+		float dx = mag * cos(dir);
+		float dy = mag * sin(dir);
+		float dxx = 0.0;
+		float dyy = ofRandom(0.5, 2.0);
+		sparticles.spawn(x, y, dx, dy, dxx, dyy);
+	}
+}
+
 //--------------------------------------------------------------
 void ofApp::update(){
 	bool allStopped = true;
@@ -65,44 +99,14 @@ void ofApp::update(){
 	}
 	if (winning && allStopped && spinning) {
 		winSound.play();
+		spawnParticles();
 		spinning = false;
-		for (int i = 0; i < 1000; i++) {
-			float maxRad = 50;
-			float r = ofRandom(maxRad);
-			float a = ofRandom(360);
-			float offsetX = ofGetWidth()/2;
-			float offsetY = ofGetHeight() / 2;
-			float dir = ofRandom(0, 360);
-			float mag = 0;
-
-			if (ofRandom(1) > 0.5) {
-				offsetX = ofGetWidth() / 2;
-				mag = ofRandom(50, 80);
-			}
-			else if (ofRandom(1) > 0.5) {
-				offsetX = ofGetWidth() / 6;
-				mag = ofRandom(30, 60);
-			}
-			else {
-				offsetX = ofGetWidth() * 5 / 6;
-				mag = ofRandom(30, 60);
-
-			}
-			float x = offsetX + r * cos(a) - maxRad/2.0;
-			float y = offsetY + r * sin(a) - maxRad/2.0;
-
-			float dx = mag * cos(dir);
-			float dy = mag * sin(dir);
-			float dxx = 0.0;
-			float dyy = ofRandom(0.5, 2.0);
-			sparticles.spawn(x, y, dx, dy, dxx, dyy);
-		}
-
 	}
 	else if (!winning && allStopped && spinning) {
 		loseSound.play();
 		spinning = false;
 	}
+
 	sparticles.update();
 }
 
@@ -120,6 +124,8 @@ void ofApp::draw() {
 	buffer.end();
 
 	buffer.draw(0, 0);
+
+	ofDrawBitmapStringHighlight("FPS: " + ofToString(ofGetFrameRate()), 10, 10);
 
 	//fade.begin();
 	//fade.setUniformTexture("inputTexture", buffer.getTexture(), 0);

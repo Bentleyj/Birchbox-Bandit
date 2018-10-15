@@ -31,7 +31,7 @@
 
 Sparticles::Sparticles(){
     pos = 0;
-    maxAge = 200;
+    maxAge = 400;
     numParticles = 1000;
     positions = new ofVec2f[numParticles];
 	velocities = new ofVec2f[numParticles];
@@ -74,6 +74,7 @@ void Sparticles::setup() {
         img->load(names[i]);
         imageLibrary.push_back(img);
     }
+	delay = 40;
 }
 
 
@@ -88,9 +89,11 @@ Sparticles::~Sparticles(){
 void Sparticles::update(){
     for(int i = 0; i < numParticles; i++) {
         ages[i]++;
-		velocities[i] += accelerations[i];
-        positions[i] += velocities[i];
-        rotations[i] += rotationSpeeds[i];
+		if (ages[i] > delay) {
+			velocities[i] += accelerations[i];
+			positions[i] += velocities[i];
+			rotations[i] += rotationSpeeds[i];
+		}
     }
 }
 
@@ -99,7 +102,7 @@ void Sparticles::draw(float xFactor, float yFactor){
     ofColor c;
     ofEnableAlphaBlending();
     for(int i = 0; i < numParticles; i++) {
-        if(ages[i]<maxAge) {
+        if(ages[i]<maxAge && ages[i]>delay) {
             float size = ofMap(ages[i], 0, maxAge, sizes[i], 0);
             c.setHex(colors[i%6]);
             ofSetColor(c.r, c.g, c.b, ofMap(ages[i], 0.5, maxAge, 255, 0) );
@@ -119,7 +122,7 @@ void Sparticles::spawn(float x, float y, float dx, float dy, float ddx, float dd
     velocities[pos] = ofVec2f(dx, dy);
 	accelerations[pos] = ofVec2f(ddx, ddy);
 	images[pos] = imageLibrary[ofRandom(imageLibrary.size())];
-    
+
     pos++;
     pos %= numParticles;
 }

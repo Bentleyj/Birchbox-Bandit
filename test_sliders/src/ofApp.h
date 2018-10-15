@@ -14,6 +14,7 @@ class ofApp : public ofBaseApp{
 		void startWinningSpin();
 		void startLosingSpin();
 		void startAlmostWinningSpin();
+		void spawnParticles();
 
 		void keyPressed(int key);
 		void keyReleased(int key);
