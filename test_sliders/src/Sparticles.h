@@ -41,6 +41,7 @@ public:
     void update();
     void draw(float xFactor, float yFactor);
     void spawn(float x, float y, float dx, float dy, float ddx, float ddy);
+	void killAllSparticles();
     ofVec2f* getVelocities() { return velocities; };
     
     Sparticles();

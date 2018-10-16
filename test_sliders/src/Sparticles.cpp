@@ -31,7 +31,7 @@
 
 Sparticles::Sparticles(){
     pos = 0;
-    maxAge = 400;
+    maxAge = 200;
     numParticles = 1000;
     positions = new ofVec2f[numParticles];
 	velocities = new ofVec2f[numParticles];
@@ -88,13 +88,21 @@ Sparticles::~Sparticles(){
 
 void Sparticles::update(){
     for(int i = 0; i < numParticles; i++) {
-        ages[i]++;
-		if (ages[i] > delay) {
-			velocities[i] += accelerations[i];
-			positions[i] += velocities[i];
-			rotations[i] += rotationSpeeds[i];
+		if (ages[i] < maxAge) {
+			ages[i]++;
+			if (ages[i] > delay && positions[i].y < ofGetHeight()) {
+				velocities[i] += accelerations[i];
+				positions[i] += velocities[i];
+				rotations[i] += rotationSpeeds[i];
+			}
 		}
     }
+}
+
+void Sparticles::killAllSparticles() {
+	for (int i = 0; i < numParticles; i++) {
+		ages[i] = maxAge;
+	}
 }
 
 void Sparticles::draw(float xFactor, float yFactor){

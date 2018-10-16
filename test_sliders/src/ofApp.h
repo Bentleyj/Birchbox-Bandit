@@ -48,5 +48,5 @@ class ofApp : public ofBaseApp{
 		float panelHeight;
 		float panelWidth;
 
-		ofFbo buffer;
+		ofFbo buffer, fullScreen;
 };
