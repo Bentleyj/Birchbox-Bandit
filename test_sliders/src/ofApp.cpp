@@ -7,7 +7,9 @@ void ofApp::setup(){
 	panelWidth = ofGetWidth() / 3.0;
 	panelHeight = ofGetHeight() / 2.0;
 
-	frame.load("images/Frame_001.png");
+	sparticles.setup();
+
+	frame.load("images/Frames/NoFadeFrame.png");
 
 	fade.load("shaders/fade");
 
@@ -22,7 +24,7 @@ void ofApp::setup(){
 	winSound.load("sounds/Big Win/JackPot SFX 4 (MP3).mp3");
 	loseSound.load("sounds/No Win/342886__michael-kur95__time-s-up-03.wav");
 	//spinningSound.load("sounds/Tension Builder/slot_machine_spin.mp3");
-	spinningSound.load("sounds/Tension Builder/TensionBuildBongosSlot.wav");
+	spinningSound.load("sounds/Tension Builder/TensionBuildBongosSlotButton2.wav");
 
 	buffer.allocate(ofGetWidth(), ofGetHeight());
 	PanelColumn* col1 = new PanelColumn();
@@ -52,6 +54,40 @@ void ofApp::setup(){
 	//panelColumns[2]->emitter.spawnSound.load("sounds/Clicks/click 2.wav");
 }
 
+void ofApp::spawnParticles() {
+	for (int i = 0; i < 1000; i++) {
+		float maxRad = 50;
+		float r = ofRandom(maxRad);
+		float a = ofRandom(360);
+		float offsetX = ofGetWidth() / 2;
+		float offsetY = ofGetHeight() / 2;
+		float dir = ofRandom(0, 360);
+		float mag = 0;
+
+		if (ofRandom(1) > 0.5) {
+			offsetX = ofGetWidth() / 2;
+			mag = ofRandom(50, 80);
+		}
+		else if (ofRandom(1) > 0.5) {
+			offsetX = ofGetWidth() / 6;
+			mag = ofRandom(30, 60);
+		}
+		else {
+			offsetX = ofGetWidth() * 5 / 6;
+			mag = ofRandom(30, 60);
+
+		}
+		float x = offsetX + r * cos(a) - maxRad / 2.0;
+		float y = offsetY + r * sin(a) - maxRad / 2.0;
+
+		float dx = mag * cos(dir);
+		float dy = mag * sin(dir);
+		float dxx = 0.0;
+		float dyy = ofRandom(0.5, 2.0);
+		sparticles.spawn(x, y, dx, dy, dxx, dyy);
+	}
+}
+
 //--------------------------------------------------------------
 void ofApp::update(){
 	bool allStopped = true;
@@ -63,12 +99,15 @@ void ofApp::update(){
 	}
 	if (winning && allStopped && spinning) {
 		winSound.play();
+		spawnParticles();
 		spinning = false;
 	}
 	else if (!winning && allStopped && spinning) {
 		loseSound.play();
 		spinning = false;
 	}
+
+	sparticles.update();
 }
 
 //--------------------------------------------------------------
@@ -78,18 +117,27 @@ void ofApp::draw() {
 	ofPushMatrix();
 	for (int i = 0; i < panelColumns.size(); i++) {
 		panelColumns[i]->draw();
-		frame.draw(panelColumns[i]->emitter.pos.x, 0);
 	}
 	ofPopMatrix();
 	buffer.end();
 
-	buffer.draw(0, 0);
+	//buffer.draw(0, 0);
 
-	//fade.begin();
-	//fade.setUniformTexture("inputTexture", buffer.getTexture(), 0);
-	//fade.setUniform2f("resolution", ofGetWidth(), ofGetHeight());
-	//ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
-	//fade.end();
+	//ofDrawBitmapStringHighlight("FPS: " + ofToString(ofGetFrameRate()), 10, 10);
+
+	fade.begin();
+	fade.setUniformTexture("inputTexture", buffer.getTexture(), 0);
+	fade.setUniform2f("resolution", buffer.getWidth(), buffer.getHeight());
+	ofDrawRectangle(0, 0, buffer.getWidth(), buffer.getHeight());
+	fade.end();
+
+	sparticles.draw(2.0, 2.0);
+
+	for (int i = 0; i < panelColumns.size(); i++) {
+		frame.draw(panelColumns[i]->emitter.pos.x, 0, buffer.getWidth()/3, buffer.getHeight());
+	}
+
+	ofDrawBitmapStringHighlight("FPS: " + ofToString(ofGetFrameRate()), 10, 10);
 
 	//ofNoFill();
 	//ofSetColor(0);
@@ -122,14 +170,14 @@ void ofApp::startAlmostWinningSpin() {
 		if (i == panelColumns.size() - 1) {
 			int newColIndex = int(ofRandom(5));
 			int newImgIndex = int(ofRandom(productImages.size()));
-			if (colIndex == newColIndex && imgIndex == newImgIndex) {
-				colIndex = (newColIndex + 1) % 5;
-				imgIndex = (newImgIndex + 1) % productImages.size();
+			if (colIndex == newColIndex) {
+				newColIndex = (newColIndex + 1) % 5;
 			}
-			else {
-				colIndex = newColIndex;
-				imgIndex = newImgIndex;
+			if (imgIndex == newImgIndex) {
+				newImgIndex = (newImgIndex + 1) % productImages.size();
 			}
+			colIndex = newColIndex;
+			imgIndex = newImgIndex;
 		}
 		panelColumns[i]->spin(colIndex, imgIndex);
 	}
@@ -145,8 +193,10 @@ void ofApp::startLosingSpin() {
 	for (int i = 0; i < panelColumns.size(); i++) {
 		int newColIndex = int(ofRandom(5));
 		int newImgIndex = int(ofRandom(productImages.size()));
-		if (colIndex == newColIndex && imgIndex == newImgIndex) {
+		if (colIndex == newColIndex) {
 			colIndex = (newColIndex + 1) % 5;
+		}
+		if (imgIndex == newImgIndex) {
 			imgIndex = (newImgIndex + 1) % productImages.size();
 		}
 		else {
@@ -163,6 +213,7 @@ void ofApp::startLosingSpin() {
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
 	if (key == ' ') {
+		sparticles.killAllSparticles();
 		if (ofRandom(1) > 0.2) {
 			if (ofRandom(1) > 0.4) {
 				startLosingSpin();

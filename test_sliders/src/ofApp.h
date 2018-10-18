@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "PanelColumn.h"
 #include "ofxNestedFileLoader.h"
+#include "Sparticles.h"
 
 class ofApp : public ofBaseApp{
 
@@ -13,6 +14,7 @@ class ofApp : public ofBaseApp{
 		void startWinningSpin();
 		void startLosingSpin();
 		void startAlmostWinningSpin();
+		void spawnParticles();
 
 		void keyPressed(int key);
 		void keyReleased(int key);
@@ -30,6 +32,8 @@ class ofApp : public ofBaseApp{
 
 		vector<ofImage*> productImages;
 
+		Sparticles sparticles;
+
 		ofSoundPlayer winSound;
 		ofSoundPlayer loseSound;
 		ofSoundPlayer spinningSound, spinningSound2;
@@ -44,5 +48,5 @@ class ofApp : public ofBaseApp{
 		float panelHeight;
 		float panelWidth;
 
-		ofFbo buffer;
+		ofFbo buffer, fullScreen;
 };
