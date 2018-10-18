@@ -48,7 +48,7 @@ Sparticles::Sparticles(){
         ages[i] = maxAge;
         sizes[i] = ofRandom(10, 52);
         rotations[i] = ofRandom(0, 360);
-        rotationSpeeds[i] = ofRandom(-5, 5);
+        rotationSpeeds[i] = ofRandom(-10, 10);
     }
     
     int i = 0;
@@ -117,6 +117,9 @@ void Sparticles::draw(float xFactor, float yFactor){
             ofPushMatrix();
             ofTranslate(positions[i].x, positions[i].y);
             ofScale(xFactor, yFactor);
+			ofTranslate(size / 2, size / 2);
+			ofRotate(rotations[i], 0, 0, 1);
+			ofTranslate(-size / 2, -size / 2);
             images[i]->draw(0, 0, size, size);
             ofPopMatrix();
         }

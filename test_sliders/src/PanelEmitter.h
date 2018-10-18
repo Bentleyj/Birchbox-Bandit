@@ -10,11 +10,11 @@ class PanelEmitter {
 public:
 	PanelEmitter() {
 		palette.resize(5);
-		palette[0] = ofColor(255, 173, 173);
-		palette[1] = ofColor(255, 239, 170);
-		palette[2] = ofColor(190, 255, 194);
-		palette[3] = ofColor(163, 253, 255);
-		palette[4] = ofColor(230, 175, 255);
+		palette[0] = ofColor(241, 217, 177);
+		palette[1] = ofColor(236, 175, 191);
+		palette[2] = ofColor(184, 223, 229);
+		palette[3] = ofColor(192, 210, 198);
+		palette[4] = ofColor(244, 160, 147);
 	};
 	~PanelEmitter() {};
 	void update();
