@@ -9,12 +9,17 @@ void ofApp::setup(){
 
 	sparticles.setup();
 
-	frame.load("images/Frames/NoFadeFrame.png");
+	frame.load("images/Frames/Frame_with Colours.png");
 
 	fade.load("shaders/fade");
 
 	ofxNestedFileLoader loader;
 	vector<string> imgPaths = loader.load("productImages");
+	string grandPrize = "Asset 1.png";
+	ofImage* img = new ofImage();
+	img->load(grandPrize);
+	productImages.push_back(img);
+
 	for (int i = 0; i < imgPaths.size(); i++) {
 		ofImage* img = new ofImage();
 		img->load(imgPaths[i]);
@@ -137,7 +142,16 @@ void ofApp::draw() {
 		frame.draw(panelColumns[i]->emitter.pos.x, 0, buffer.getWidth()/3, buffer.getHeight());
 	}
 
-	ofDrawBitmapStringHighlight("FPS: " + ofToString(ofGetFrameRate()), 10, 10);
+	int y = 10;
+	ofDrawBitmapStringHighlight("FPS: " + ofToString(ofGetFrameRate()), 10, y+=20);
+
+	ofDrawBitmapStringHighlight("numSpins: " + ofToString(numSpins), 10, y += 20);
+	ofDrawBitmapStringHighlight("numWins: " + ofToString(numNormalWins), 10, y += 20);
+	ofDrawBitmapStringHighlight("numLoses: " + ofToString(numLoses), 10, y += 20);
+	ofDrawBitmapStringHighlight("numGrandPrizes: " + ofToString(numGrandPrizes), 10, y += 20);
+	ofDrawBitmapStringHighlight("winRate: " + ofToString(float(numNormalWins)/float(max(numSpins,1))), 10, y += 20);
+	ofDrawBitmapStringHighlight("gpRate: " + ofToString(float(numGrandPrizes) / float(max(numSpins, 1))), 10, y += 20);
+
 
 	//ofNoFill();
 	//ofSetColor(0);
@@ -153,7 +167,7 @@ void ofApp::draw() {
 //--------------------------------------------------------------
 void ofApp::startWinningSpin() {
 	int colIndex = int(ofRandom(5));
-	int imgIndex = int(ofRandom(productImages.size()));
+	int imgIndex = int(ofRandom(1, productImages.size()));
 	for (int i = 0; i < panelColumns.size(); i++) {
 		panelColumns[i]->spin(colIndex, imgIndex);
 	}
@@ -165,7 +179,7 @@ void ofApp::startWinningSpin() {
 //--------------------------------------------------------------
 void ofApp::startAlmostWinningSpin() {
 	int colIndex = int(ofRandom(5));
-	int imgIndex = int(ofRandom(productImages.size()));
+	int imgIndex = int(ofRandom(1, productImages.size()));
 	for (int i = 0; i < panelColumns.size(); i++) {
 		if (i == panelColumns.size() - 1) {
 			int newColIndex = int(ofRandom(5));
@@ -187,12 +201,25 @@ void ofApp::startAlmostWinningSpin() {
 }
 
 //--------------------------------------------------------------
+void ofApp::startGrandPrizeSpin() {
+	int colIndex = int(ofRandom(5));
+	int imgIndex = 0;
+	for (int i = 0; i < panelColumns.size(); i++) {
+		panelColumns[i]->spin(colIndex, imgIndex);
+	}
+	spinning = true;
+	winning = true;
+	spinningSound.play();
+}
+
+
+//--------------------------------------------------------------
 void ofApp::startLosingSpin() {
 	int colIndex = int(ofRandom(5));
-	int imgIndex = int(ofRandom(productImages.size()));
+	int imgIndex = int(ofRandom(1, productImages.size()));
 	for (int i = 0; i < panelColumns.size(); i++) {
 		int newColIndex = int(ofRandom(5));
-		int newImgIndex = int(ofRandom(productImages.size()));
+		int newImgIndex = int(ofRandom(1, productImages.size()));
 		if (colIndex == newColIndex) {
 			colIndex = (newColIndex + 1) % 5;
 		}
@@ -213,21 +240,32 @@ void ofApp::startLosingSpin() {
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
 	if (key == ' ') {
+		numSpins++;
 		sparticles.killAllSparticles();
-		if (ofRandom(1) > 0.2) {
-			if (ofRandom(1) > 0.4) {
-				startLosingSpin();
+		if (ofRandom(1) > 0.99) {
+			startGrandPrizeSpin();
+			numGrandPrizes++;
+		} else {
+			if (ofRandom(1) > 0.5) {
+				if (ofRandom(1) > 0.4) {
+					startLosingSpin();
+				}
+				else {
+					startAlmostWinningSpin();
+				}
+				numLoses++;
 			}
 			else {
-				startAlmostWinningSpin();
+				startWinningSpin();
+				numNormalWins++;
 			}
-		}
-		else {
-			startWinningSpin();
 		}
 	}
 	else if (key == 'w') {
 		startWinningSpin();
+	}
+	else if (key == 'g') {
+		startGrandPrizeSpin();
 	}
 	else if (key == 'l') {
 		startLosingSpin();

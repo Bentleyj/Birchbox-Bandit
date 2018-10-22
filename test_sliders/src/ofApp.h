@@ -12,6 +12,7 @@ class ofApp : public ofBaseApp{
 		void update();
 		void draw();
 		void startWinningSpin();
+		void startGrandPrizeSpin();
 		void startLosingSpin();
 		void startAlmostWinningSpin();
 		void spawnParticles();
@@ -44,6 +45,11 @@ class ofApp : public ofBaseApp{
 
 		bool winning;
 		bool spinning;
+
+		int numSpins;
+		int numNormalWins;
+		int numLoses;
+		int numGrandPrizes;
 
 		float panelHeight;
 		float panelWidth;
