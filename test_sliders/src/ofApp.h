@@ -4,6 +4,7 @@
 #include "PanelColumn.h"
 #include "ofxNestedFileLoader.h"
 #include "Sparticles.h"
+#include "ofxGui.h"
 
 class ofApp : public ofBaseApp{
 
@@ -15,7 +16,7 @@ class ofApp : public ofBaseApp{
 		void startGrandPrizeSpin();
 		void startLosingSpin();
 		void startAlmostWinningSpin();
-		void spawnParticles();
+		void spawnParticles(Sparticles* particles, float delayMin, float delayMax);
 
 		void keyPressed(int key);
 		void keyReleased(int key);
@@ -33,9 +34,10 @@ class ofApp : public ofBaseApp{
 
 		vector<ofImage*> productImages;
 
-		Sparticles sparticles;
+		Sparticles sparticles, grandPrizeSparticles;
 
 		ofSoundPlayer winSound;
+		ofSoundPlayer grandPrizeSound;
 		ofSoundPlayer loseSound;
 		ofSoundPlayer spinningSound, spinningSound2;
 
@@ -44,6 +46,7 @@ class ofApp : public ofBaseApp{
 		ofShader fade;
 
 		bool winning;
+		bool winningGrandPrize;
 		bool spinning;
 
 		int numSpins;
@@ -53,6 +56,13 @@ class ofApp : public ofBaseApp{
 
 		float panelHeight;
 		float panelWidth;
+
+		bool drawGui = false;
+
+		ofxPanel gui;
+
+		ofParameter<float> winChance;
+		ofParameter<float> gpChance;
 
 		ofFbo buffer, fullScreen;
 };

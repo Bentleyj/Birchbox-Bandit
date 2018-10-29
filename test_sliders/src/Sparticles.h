@@ -37,10 +37,10 @@ class Sparticles {
     
 public:
     
-    void setup();
+    void setup(string imagePath);
     void update();
     void draw(float xFactor, float yFactor);
-    void spawn(float x, float y, float dx, float dy, float ddx, float ddy);
+    void spawn(float x, float y, float dx, float dy, float ddx, float ddy, float _delay);
 	void killAllSparticles();
     ofVec2f* getVelocities() { return velocities; };
     
@@ -63,7 +63,7 @@ private:
     float *rotations;
     float *rotationSpeeds;
     float *sizes;
-	int delay;
+	float *delays;
     int *ages;
 	vector<ofImage*> images;
     vector<ofImage*> imageLibrary;
