@@ -19,8 +19,7 @@ public:
 	~PanelEmitter() {};
 	void update();
 	void draw();
-	Panel* createPanel();
-	Panel* createPanel(int colIndex, int imgIndex);
+	Panel* createPanel(int colIndex, ofImage* img);
 
 	ofVec2f pos;
 	ofVec2f initialVel;
@@ -30,7 +29,6 @@ public:
 	ofSoundPlayer spawnSound;
 
 	vector<ofColor> palette;
-	vector<ofImage*>* images;
 
 private:
 };

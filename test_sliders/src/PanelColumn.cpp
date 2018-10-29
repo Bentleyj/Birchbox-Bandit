@@ -46,7 +46,7 @@ void PanelColumn::createPanel() {
 }
 
 void PanelColumn::createFinalPanel() {
-	Panel* p = emitter.createPanel(stopColIndex, stopImgIndex);
+	Panel* p = emitter.createPanel(stopColIndex, stopImg);
 	finalPanel = p;
 	panels.push_back(p);
 	if (panels.size() > 1) {
@@ -66,9 +66,9 @@ void PanelColumn::removeFirstPanel() {
 	}
 }
 
-void PanelColumn::spin(int colIndex, int imgIndex) {
+void PanelColumn::spin(int colIndex, ofImage* img) {
 	stopColIndex = colIndex;
-	stopImgIndex = imgIndex;
+	stopImg = img;
 	spinStartTime = ofGetElapsedTimef();
 	start();
 }

@@ -15,21 +15,43 @@ void ofApp::setup(){
 	fade.load("shaders/fade");
 
 	ofxNestedFileLoader loader;
-	vector<string> imgPaths = loader.load("productImages");
-	string grandPrize = "Win Coin B.png";
-	ofImage* img = new ofImage();
-	img->load(grandPrize);
-	productImages.push_back(img);
+	vector<string> contentPaths = loader.load("characters");
 
-	for (int i = 0; i < imgPaths.size(); i++) {
-		ofImage* img = new ofImage();
-		img->load(imgPaths[i]);
-		productImages.push_back(img);
+	for (int i = 0; i < contentPaths.size(); i++) {
+		vector<string> fs = loader.getFolderStructure(contentPaths[i]);
+		string fe = loader.getFileExtension(contentPaths[i]);
+		string name = fs[1];
+		PanelImage* pi = nullptr;
+		for (int i = 0; i < panelImages.size(); i++) {
+			if (name == panelImages[i]->name) {
+				pi = panelImages[i];
+				break;
+			}
+		}
+		if (pi == nullptr) {
+			pi = new PanelImage();
+			pi->name = name;
+			if (fe == "jpg") {
+				pi->img->load(contentPaths[i]);
+			}
+			else if (fe == "wav") {
+				ofSoundPlayer* p = new ofSoundPlayer();
+				pi->sounds.push_back(p);
+			}
+			panelImages.push_back(pi);
+		}
+		else {
+			if (fe == "jpg") {
+				pi->img->load(contentPaths[i]);
+			}
+			else if (fe == "wav") {
+				ofSoundPlayer* p = new ofSoundPlayer();
+				pi->sounds.push_back(p);
+			}
+		}
 	}
 
-	winSound.load("sounds/Big Win/JackPot SFX 4 (MP3).mp3");
 	loseSound.load("sounds/No Win/342886__michael-kur95__time-s-up-03.wav");
-	grandPrizeSound.load("sounds/Grand Prize/MusicFanfare SME01_13.1.wav");	//spinningSound.load("sounds/Tension Builder/slot_machine_spin.mp3");
 	spinningSound.load("sounds/Tension Builder/TensionBuildBongosSlotButton2.wav");
 
 	buffer.allocate(ofGetWidth(), ofGetHeight());
@@ -47,7 +69,6 @@ void ofApp::setup(){
 		panelColumns[i]->emitter.width = panelWidth;
 		panelColumns[i]->emitter.height = panelHeight;
 		panelColumns[i]->killDistance = ofGetHeight() + panelHeight * 1.5 + 10;
-		panelColumns[i]->emitter.images = &productImages;
 		panelColumns[i]->spinDuration = 2.0 + i;
 		panelColumns[i]->stopSound.load("sounds/Clicks/chip_money.mp3");
 		panelColumns[i]->frame = &frame;
@@ -60,9 +81,7 @@ void ofApp::setup(){
 	string settingsPath = "settings/probabilities.xml";
 	gui.setup("Probability", settingsPath);
 	gui.add(winChance.set("Win Chance", 0.5, 0.0, 1.0));
-	gui.add(gpChance.set("Grand Prize Chance", 0.01, 0.0, 0.1));
 	gui.loadFromFile(settingsPath);
-	//panelColumns[2]->emitter.spawnSound.load("sounds/Clicks/click 2.wav");
 }
 
 void ofApp::spawnParticles(Sparticles* particles, float delayMin, float delayMax)
@@ -110,16 +129,8 @@ void ofApp::update(){
 		}
 	}
 	if (winning && allStopped && spinning) {
-		if (winningGrandPrize) {
-			winSound.play();
-			grandPrizeSound.play();
-			spawnParticles(&grandPrizeSparticles, 40, 40);
-		}
-		else {
-			winSound.play();
-			spawnParticles(&sparticles, 40, 40);
-		}
-
+		winSound->play();
+		spawnParticles(&sparticles, 40, 40);
 		spinning = false;
 	}
 	else if (!winning && allStopped && spinning) {
@@ -167,42 +178,29 @@ void ofApp::draw() {
 		ofDrawBitmapStringHighlight("numSpins: " + ofToString(numSpins), gui.getPosition().x + gui.getWidth(), y += 20);
 		ofDrawBitmapStringHighlight("numWins: " + ofToString(numNormalWins), gui.getPosition().x + gui.getWidth(), y += 20);
 		ofDrawBitmapStringHighlight("numLoses: " + ofToString(numLoses), gui.getPosition().x + gui.getWidth(), y += 20);
-		ofDrawBitmapStringHighlight("numGrandPrizes: " + ofToString(numGrandPrizes), gui.getPosition().x + gui.getWidth(), y += 20);
 		ofDrawBitmapStringHighlight("winRate: " + ofToString(float(numNormalWins) / float(max(numSpins, 1))), gui.getPosition().x + gui.getWidth(), y += 20);
-		ofDrawBitmapStringHighlight("gpRate: " + ofToString(float(numGrandPrizes) / float(max(numSpins, 1))), gui.getPosition().x + gui.getWidth(), y += 20);
 
 		gui.draw();
 	}
-
-
-	//ofNoFill();
-	//ofSetColor(0);
-	//ofDrawRectangle(0, 0, buffer.getWidth(), buffer.getHeight());
-	//ofSetLineWidth(5);
-	//ofDrawRectangle(0, buffer.getHeight() / 4.0, buffer.getWidth(), buffer.getHeight() / 2.0);
-	//ofPopStyle();
-	//buffer.end();
-
-	//buffer.draw(0, 0, buffer.getWidth() / 2, buffer.getHeight() / 2);
 }
 
 //--------------------------------------------------------------
 void ofApp::startWinningSpin() {
 	int colIndex = int(ofRandom(5));
-	int imgIndex = int(ofRandom(1, productImages.size()));
+	int imgIndex = int(ofRandom(0, panelImages.size()));
+	winSound = panelImages[imgIndex]->getRandomSound();
 	for (int i = 0; i < panelColumns.size(); i++) {
-		panelColumns[i]->spin(colIndex, imgIndex);
+		panelColumns[i]->spin(colIndex, panelImages[imgIndex]->img);
 	}
 	spinning = true;
 	winning = true;
-	winningGrandPrize = false;
 	spinningSound.play();
 }
 
 //--------------------------------------------------------------
 void ofApp::startAlmostWinningSpin() {
 	int colIndex = int(ofRandom(5));
-	int imgIndex = int(ofRandom(1, productImages.size()));
+	int imgIndex = int(ofRandom(0, panelImages.size()));
 	for (int i = 0; i < panelColumns.size(); i++) {
 		if (i == panelColumns.size() - 1) {
 			int newColIndex = int(ofRandom(5));
@@ -216,32 +214,17 @@ void ofApp::startAlmostWinningSpin() {
 			colIndex = newColIndex;
 			imgIndex = newImgIndex;
 		}
-		panelColumns[i]->spin(colIndex, imgIndex);
+		panelColumns[i]->spin(colIndex, panelImages[imgIndex]->img);
 	}
 	spinning = true;
 	winning = false;
-	winningGrandPrize = false;
 	spinningSound.play();
 }
-
-//--------------------------------------------------------------
-void ofApp::startGrandPrizeSpin() {
-	int colIndex = int(ofRandom(5));
-	int imgIndex = 0;
-	for (int i = 0; i < panelColumns.size(); i++) {
-		panelColumns[i]->spin(colIndex, imgIndex);
-	}
-	spinning = true;
-	winning = true;
-	winningGrandPrize = true;
-	spinningSound.play();
-}
-
 
 //--------------------------------------------------------------
 void ofApp::startLosingSpin() {
 	int colIndex = int(ofRandom(5));
-	int imgIndex = int(ofRandom(1, productImages.size()));
+	int imgIndex = int(ofRandom(0, panelImages.size()));
 	for (int i = 0; i < panelColumns.size(); i++) {
 		int newColIndex = int(ofRandom(5));
 		int newImgIndex = int(ofRandom(1, productImages.size()));
@@ -255,11 +238,10 @@ void ofApp::startLosingSpin() {
 			colIndex = newColIndex;
 			imgIndex = newImgIndex;
 		}
-		panelColumns[i]->spin(colIndex, imgIndex);
+		panelColumns[i]->spin(colIndex, panelImages[imgIndex]->img);
 	}
 	spinning = true;
 	winning = false;
-	winningGrandPrize = false;
 	spinningSound.play();
 }
 
@@ -269,35 +251,27 @@ void ofApp::keyPressed(int key){
 	grandPrizeSparticles.killAllSparticles();
 	if (key == ' ') {
 		numSpins++;
-		if (ofRandom(1) > 1.0 - gpChance) {
-			startGrandPrizeSpin();
-			numGrandPrizes++;
-		} else {
-			if (ofRandom(1) > winChance) {
-				if (ofRandom(1) > 0.4) {
-					startLosingSpin();
-				}
-				else {
-					startAlmostWinningSpin();
-				}
-				numLoses++;
+		if (ofRandom(1) > winChance) {
+			if (ofRandom(1) > 0.4) {
+				startLosingSpin();
 			}
 			else {
-				startWinningSpin();
-				numNormalWins++;
+				startAlmostWinningSpin();
 			}
+			numLoses++;
+		}
+		else {
+			startWinningSpin();
+			numNormalWins++;
 		}
 	}
 	else if (key == 'w') {
 		startWinningSpin();
 	}
-	else if (key == 'g') {
-		startGrandPrizeSpin();
-	}
 	else if (key == 'l') {
 		startLosingSpin();
 	} 
-	else if (key == 's') {
+	else if (key == 'g') {
 		drawGui = !drawGui;
 	}
 }

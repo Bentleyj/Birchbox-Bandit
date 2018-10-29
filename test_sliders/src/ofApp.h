@@ -7,8 +7,14 @@
 #include "ofxGui.h"
 
 struct PanelImage {
+	PanelImage() {
+		img = new ofImage();
+		sounds.resize(0);
+	}
+	~PanelImage() {}
+	string name;
 	ofImage* img;
-	vector<ofSoundPlayer*> sounds;
+	vector<ofSoundPlayer* > sounds;
 	ofSoundPlayer* getRandomSound() {
 		return sounds[ofRandom(0, sounds.size())];
 	}
@@ -24,7 +30,6 @@ class ofApp : public ofBaseApp{
 		void update();
 		void draw();
 		void startWinningSpin();
-		void startGrandPrizeSpin();
 		void startLosingSpin();
 		void startAlmostWinningSpin();
 		void spawnParticles(Sparticles* particles, float delayMin, float delayMax);
@@ -43,12 +48,13 @@ class ofApp : public ofBaseApp{
 
 		vector<PanelColumn* > panelColumns;
 
-		vector<ofImage*> productImages;
+		vector<ofImage* > productImages;
+
+		vector<PanelImage* > panelImages;
 
 		Sparticles sparticles, grandPrizeSparticles;
 
-		ofSoundPlayer winSound;
-		ofSoundPlayer grandPrizeSound;
+		ofSoundPlayer* winSound;
 		ofSoundPlayer loseSound;
 		ofSoundPlayer spinningSound, spinningSound2;
 
@@ -57,13 +63,11 @@ class ofApp : public ofBaseApp{
 		ofShader fade;
 
 		bool winning;
-		bool winningGrandPrize;
 		bool spinning;
 
 		int numSpins;
 		int numNormalWins;
 		int numLoses;
-		int numGrandPrizes;
 
 		float panelHeight;
 		float panelWidth;
@@ -73,7 +77,6 @@ class ofApp : public ofBaseApp{
 		ofxPanel gui;
 
 		ofParameter<float> winChance;
-		ofParameter<float> gpChance;
 
 		ofFbo buffer, fullScreen;
 };

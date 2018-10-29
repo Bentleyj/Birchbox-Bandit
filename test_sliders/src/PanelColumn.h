@@ -22,7 +22,7 @@ public:
 	void removeFirstPanel();
 	void stop();
 	void start();
-	void spin(int colIndex, int imgIndex);
+	void spin(int colIndex, ofImage* img);
 
 	ofSoundPlayer stopSound;
 
@@ -33,7 +33,7 @@ public:
 
 	Panel* finalPanel;
 	int stopColIndex = 0;
-	int stopImgIndex = 0;
+	ofImage* stopImg;
 	bool stopped;
 
 	float spinStartTime;
