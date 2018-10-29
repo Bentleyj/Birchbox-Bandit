@@ -7,9 +7,6 @@ void ofApp::setup(){
 	panelWidth = ofGetWidth() / 3.0;
 	panelHeight = ofGetHeight() / 2.0;
 
-	sparticles.setup("images/particles");
-	grandPrizeSparticles.setup("images/GrandPrizeParticles");
-
 	frame.load("images/Frames/Frame_with Colours.png");
 
 	fade.load("shaders/fade");
@@ -31,24 +28,32 @@ void ofApp::setup(){
 		if (pi == nullptr) {
 			pi = new PanelImage();
 			pi->name = name;
-			if (fe == "jpg") {
+			if (fe == "jpg" || fe == "png") {
 				pi->img->load(contentPaths[i]);
+				allImages.push_back(pi->img);
 			}
-			else if (fe == "wav") {
+			else if (fe == "wav" || fe == "mp3") {
 				ofSoundPlayer* p = new ofSoundPlayer();
+				p->load(contentPaths[i]);
 				pi->sounds.push_back(p);
 			}
 			panelImages.push_back(pi);
 		}
 		else {
-			if (fe == "jpg") {
+			if (fe == "jpg" || fe == "png") {
 				pi->img->load(contentPaths[i]);
+				allImages.push_back(pi->img);
 			}
-			else if (fe == "wav") {
+			else if (fe == "wav" || fe == "mp3") {
 				ofSoundPlayer* p = new ofSoundPlayer();
+				p->load(contentPaths[i]);
 				pi->sounds.push_back(p);
 			}
 		}
+	}
+
+	for (int i = 0; i < panelImages.size(); i++) {
+		panelImages[i]->printState();
 	}
 
 	loseSound.load("sounds/No Win/342886__michael-kur95__time-s-up-03.wav");
@@ -69,6 +74,7 @@ void ofApp::setup(){
 		panelColumns[i]->emitter.width = panelWidth;
 		panelColumns[i]->emitter.height = panelHeight;
 		panelColumns[i]->killDistance = ofGetHeight() + panelHeight * 1.5 + 10;
+		panelColumns[i]->emitter.images = &allImages;
 		panelColumns[i]->spinDuration = 2.0 + i;
 		panelColumns[i]->stopSound.load("sounds/Clicks/chip_money.mp3");
 		panelColumns[i]->frame = &frame;
@@ -84,41 +90,6 @@ void ofApp::setup(){
 	gui.loadFromFile(settingsPath);
 }
 
-void ofApp::spawnParticles(Sparticles* particles, float delayMin, float delayMax)
-{
-	for (int i = 0; i < 1000; i++) {
-		float maxRad = 50;
-		float r = ofRandom(maxRad);
-		float a = ofRandom(360);
-		float offsetX = ofGetWidth() / 2;
-		float offsetY = ofGetHeight() / 2;
-		float dir = ofRandom(0, 360);
-		float mag = 0;
-
-		if (ofRandom(1) > 0.5) {
-			offsetX = ofGetWidth() / 2;
-			mag = ofRandom(50, 80);
-		}
-		else if (ofRandom(1) > 0.5) {
-			offsetX = ofGetWidth() / 6;
-			mag = ofRandom(30, 60);
-		}
-		else {
-			offsetX = ofGetWidth() * 5 / 6;
-			mag = ofRandom(30, 60);
-		}
-		float x = offsetX + r * cos(a) - maxRad / 2.0;
-		float y = offsetY + r * sin(a) - maxRad / 2.0;
-
-		float dx = mag * cos(dir);
-		float dy = mag * sin(dir);
-		float dxx = 0.0;
-		float dyy = ofRandom(0.5, 2.0);
-		float delay = ofRandom(delayMin, delayMax);
-		particles->spawn(x, y, dx, dy, dxx, dyy, delay);
-	}
-}
-
 //--------------------------------------------------------------
 void ofApp::update(){
 	bool allStopped = true;
@@ -130,16 +101,12 @@ void ofApp::update(){
 	}
 	if (winning && allStopped && spinning) {
 		winSound->play();
-		spawnParticles(&sparticles, 40, 40);
 		spinning = false;
 	}
 	else if (!winning && allStopped && spinning) {
 		loseSound.play();
 		spinning = false;
 	}
-
-	sparticles.update();
-	grandPrizeSparticles.update();
 }
 
 //--------------------------------------------------------------
@@ -162,10 +129,6 @@ void ofApp::draw() {
 	fade.setUniform2f("resolution", buffer.getWidth(), buffer.getHeight());
 	ofDrawRectangle(0, 0, buffer.getWidth(), buffer.getHeight());
 	fade.end();
-
-	sparticles.draw(2.0, 2.0);
-	grandPrizeSparticles.draw(2.0, 2.0);
-
 
 	for (int i = 0; i < panelColumns.size(); i++) {
 		frame.draw(panelColumns[i]->emitter.pos.x, 0, buffer.getWidth()/3, buffer.getHeight());
@@ -204,12 +167,12 @@ void ofApp::startAlmostWinningSpin() {
 	for (int i = 0; i < panelColumns.size(); i++) {
 		if (i == panelColumns.size() - 1) {
 			int newColIndex = int(ofRandom(5));
-			int newImgIndex = int(ofRandom(productImages.size()));
+			int newImgIndex = int(ofRandom(panelImages.size()));
 			if (colIndex == newColIndex) {
 				newColIndex = (newColIndex + 1) % 5;
 			}
 			if (imgIndex == newImgIndex) {
-				newImgIndex = (newImgIndex + 1) % productImages.size();
+				newImgIndex = (newImgIndex + 1) % panelImages.size();
 			}
 			colIndex = newColIndex;
 			imgIndex = newImgIndex;
@@ -227,12 +190,12 @@ void ofApp::startLosingSpin() {
 	int imgIndex = int(ofRandom(0, panelImages.size()));
 	for (int i = 0; i < panelColumns.size(); i++) {
 		int newColIndex = int(ofRandom(5));
-		int newImgIndex = int(ofRandom(1, productImages.size()));
+		int newImgIndex = int(ofRandom(1, panelImages.size()));
 		if (colIndex == newColIndex) {
 			colIndex = (newColIndex + 1) % 5;
 		}
 		if (imgIndex == newImgIndex) {
-			imgIndex = (newImgIndex + 1) % productImages.size();
+			imgIndex = (newImgIndex + 1) % panelImages.size();
 		}
 		else {
 			colIndex = newColIndex;
@@ -247,8 +210,6 @@ void ofApp::startLosingSpin() {
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-	sparticles.killAllSparticles();
-	grandPrizeSparticles.killAllSparticles();
 	if (key == ' ') {
 		numSpins++;
 		if (ofRandom(1) > winChance) {

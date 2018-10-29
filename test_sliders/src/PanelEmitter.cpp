@@ -14,6 +14,54 @@ void PanelEmitter::draw() {
 	ofPopStyle();
 }
 
+Panel* PanelEmitter::createPanel( ofImage* img) {
+	Panel* p = new Panel();
+
+	p->pos = pos;
+
+	p->width = width;
+
+	p->height = height;
+
+	p->maxVel = initialVel;
+
+	p->vel = initialVel;
+
+	p->acc = initialAcc;
+
+	p->col = palette[ofRandom(0, palette.size())];
+
+	p->img = img;
+
+	p->stopped = false;
+
+	return p;
+}
+
+Panel* PanelEmitter::createPanel() {
+	Panel* p = new Panel();
+
+	p->pos = pos;
+
+	p->width = width;
+
+	p->height = height;
+
+	p->maxVel = initialVel;
+
+	p->vel = initialVel;
+
+	p->acc = initialAcc;
+
+	p->col = palette[ofRandom(0, palette.size())];
+
+	p->img = (*images)[ofRandom(0, images->size())];
+
+	p->stopped = false;
+
+	return p;
+}
+
 Panel* PanelEmitter::createPanel(int colIndex, ofImage* img) {
 	Panel* p = new Panel();
 

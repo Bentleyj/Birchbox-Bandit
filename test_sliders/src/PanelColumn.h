@@ -28,12 +28,12 @@ public:
 
 	PanelEmitter emitter;
 	vector<Panel*> panels;
-
+	
 	ofImage* frame;
 
 	Panel* finalPanel;
 	int stopColIndex = 0;
-	ofImage* stopImg;
+	ofImage* stopImg = nullptr;
 	bool stopped;
 
 	float spinStartTime;

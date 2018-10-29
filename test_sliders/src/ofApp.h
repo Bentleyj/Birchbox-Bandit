@@ -3,7 +3,6 @@
 #include "ofMain.h"
 #include "PanelColumn.h"
 #include "ofxNestedFileLoader.h"
-#include "Sparticles.h"
 #include "ofxGui.h"
 
 struct PanelImage {
@@ -21,6 +20,11 @@ struct PanelImage {
 	void playRandomSound() {
 		sounds[ofRandom(0, sounds.size())]->play();
 	}
+
+	void printState() {
+		cout << "Name: " << name << endl;
+		cout << "Num Sounds: " << sounds.size() << endl;
+	}
 };
 
 class ofApp : public ofBaseApp{
@@ -32,7 +36,6 @@ class ofApp : public ofBaseApp{
 		void startWinningSpin();
 		void startLosingSpin();
 		void startAlmostWinningSpin();
-		void spawnParticles(Sparticles* particles, float delayMin, float delayMax);
 
 		void keyPressed(int key);
 		void keyReleased(int key);
@@ -48,11 +51,9 @@ class ofApp : public ofBaseApp{
 
 		vector<PanelColumn* > panelColumns;
 
-		vector<ofImage* > productImages;
+		vector<ofImage* > allImages;
 
 		vector<PanelImage* > panelImages;
-
-		Sparticles sparticles, grandPrizeSparticles;
 
 		ofSoundPlayer* winSound;
 		ofSoundPlayer loseSound;

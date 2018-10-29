@@ -46,7 +46,13 @@ void PanelColumn::createPanel() {
 }
 
 void PanelColumn::createFinalPanel() {
-	Panel* p = emitter.createPanel(stopColIndex, stopImg);
+	Panel* p;
+	if (stopImg == nullptr) {
+		p = emitter.createPanel();
+	}
+	else {
+		p = emitter.createPanel(stopColIndex, stopImg);
+	}
 	finalPanel = p;
 	panels.push_back(p);
 	if (panels.size() > 1) {
