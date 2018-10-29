@@ -6,6 +6,17 @@
 #include "Sparticles.h"
 #include "ofxGui.h"
 
+struct PanelImage {
+	ofImage* img;
+	vector<ofSoundPlayer*> sounds;
+	ofSoundPlayer* getRandomSound() {
+		return sounds[ofRandom(0, sounds.size())];
+	}
+	void playRandomSound() {
+		sounds[ofRandom(0, sounds.size())]->play();
+	}
+};
+
 class ofApp : public ofBaseApp{
 
 	public:

@@ -2,14 +2,14 @@
 
 // Update the panel's position.
 void Panel::update() {
-	// If we have a nextpanel, justs tick to it.
+	// If we have a nextpanel, just stick to it.
 	if (nextPanel != nullptr) {
 		pos.set(nextPanel->pos.val - ofVec2f(0, nextPanel->height));
 	} else { // If we don't have a nextPanel then we are controlling our own motion.
 		// If we're stopped seek to a target.
 		if (stopped) {
 			pos.update();
-		} else { // If not spin at a speed!
+		} else { // If not spin at a speed
 			vel += acc;
 			if (vel.x > maxVel.x) {
 				vel.x = maxVel.x;
