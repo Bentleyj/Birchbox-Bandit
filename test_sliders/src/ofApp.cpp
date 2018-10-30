@@ -10,7 +10,7 @@ void ofApp::setup(){
 	sparticles.setup("images/particles");
 	grandPrizeSparticles.setup("images/GrandPrizeParticles");
 
-	frame.load("images/Frames/Frame_with Colours.png");
+	frame.load("images/Frames/Asset 3.png");
 
 	fade.load("shaders/fade");
 
@@ -63,41 +63,6 @@ void ofApp::setup(){
 	gui.add(gpChance.set("Grand Prize Chance", 0.01, 0.0, 0.1));
 	gui.loadFromFile(settingsPath);
 	//panelColumns[2]->emitter.spawnSound.load("sounds/Clicks/click 2.wav");
-}
-
-void ofApp::spawnParticles(Sparticles* particles, float delayMin, float delayMax)
-{
-	for (int i = 0; i < 1000; i++) {
-		float maxRad = 50;
-		float r = ofRandom(maxRad);
-		float a = ofRandom(360);
-		float offsetX = ofGetWidth() / 2;
-		float offsetY = ofGetHeight() / 2;
-		float dir = ofRandom(0, 360);
-		float mag = 0;
-
-		if (ofRandom(1) > 0.5) {
-			offsetX = ofGetWidth() / 2;
-			mag = ofRandom(50, 80);
-		}
-		else if (ofRandom(1) > 0.5) {
-			offsetX = ofGetWidth() / 6;
-			mag = ofRandom(30, 60);
-		}
-		else {
-			offsetX = ofGetWidth() * 5 / 6;
-			mag = ofRandom(30, 60);
-		}
-		float x = offsetX + r * cos(a) - maxRad / 2.0;
-		float y = offsetY + r * sin(a) - maxRad / 2.0;
-
-		float dx = mag * cos(dir);
-		float dy = mag * sin(dir);
-		float dxx = 0.0;
-		float dyy = ofRandom(0.5, 2.0);
-		float delay = ofRandom(delayMin, delayMax);
-		particles->spawn(x, y, dx, dy, dxx, dyy, delay);
-	}
 }
 
 //--------------------------------------------------------------
@@ -283,6 +248,42 @@ void ofApp::keyPressed(int key){
 	} 
 	else if (key == 's') {
 		drawGui = !drawGui;
+	}
+}
+
+//--------------------------------------------------------------
+void ofApp::spawnParticles(Sparticles* particles, float delayMin, float delayMax)
+{
+	for (int i = 0; i < 1000; i++) {
+		float maxRad = 50;
+		float r = ofRandom(maxRad);
+		float a = ofRandom(360);
+		float offsetX = ofGetWidth() / 2;
+		float offsetY = ofGetHeight() / 2;
+		float dir = ofRandom(0, 360);
+		float mag = 0;
+
+		if (ofRandom(1) > 0.5) {
+			offsetX = ofGetWidth() / 2;
+			mag = ofRandom(50, 80);
+		}
+		else if (ofRandom(1) > 0.5) {
+			offsetX = ofGetWidth() / 6;
+			mag = ofRandom(30, 60);
+		}
+		else {
+			offsetX = ofGetWidth() * 5 / 6;
+			mag = ofRandom(30, 60);
+		}
+		float x = offsetX + r * cos(a) - maxRad / 2.0;
+		float y = offsetY + r * sin(a) - maxRad / 2.0;
+
+		float dx = mag * cos(dir);
+		float dy = mag * sin(dir);
+		float dxx = 0.0;
+		float dyy = ofRandom(0.5, 2.0);
+		float delay = ofRandom(delayMin, delayMax);
+		particles->spawn(x, y, dx, dy, dxx, dyy, delay);
 	}
 }
 
