@@ -29,10 +29,11 @@ void Panel::draw() {
 	ofSetColor(col);
 	ofTranslate(pos.val);
 	ofDrawRectangle(ofVec2f(0, 0), width, height);
-	ofSetColor(255);
 	float scale = height / img->getHeight();
-	float w = img->getWidth() * scale * 0.5;
-	img->draw((width - w)/2, height / 4.0, w, height * 0.5);
+	float imgWidth = img->getWidth() * scale;
+	float imgHeight = height;
+	img->draw((width - imgWidth) / 2.0, (height - imgHeight) / 2.0, imgWidth, imgHeight);
+	ofSetColor(255);
 	ofNoFill();
 	ofSetColor(0);
 	ofDrawRectangle(ofVec2f(0, 0), width, height);

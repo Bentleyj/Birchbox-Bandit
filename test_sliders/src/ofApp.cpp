@@ -142,10 +142,6 @@ void ofApp::draw() {
 	ofPopMatrix();
 	buffer.end();
 
-	//buffer.draw(0, 0);
-
-	//ofDrawBitmapStringHighlight("FPS: " + ofToString(ofGetFrameRate()), 10, 10);
-
 	fade.begin();
 	fade.setUniformTexture("inputTexture", buffer.getTexture(), 0);
 	fade.setUniform2f("resolution", buffer.getWidth(), buffer.getHeight());
@@ -154,7 +150,6 @@ void ofApp::draw() {
 
 	sparticles.draw(2.0, 2.0);
 	grandPrizeSparticles.draw(2.0, 2.0);
-
 
 	for (int i = 0; i < panelColumns.size(); i++) {
 		frame.draw(panelColumns[i]->emitter.pos.x, 0, buffer.getWidth()/3, buffer.getHeight());
@@ -173,17 +168,6 @@ void ofApp::draw() {
 
 		gui.draw();
 	}
-
-
-	//ofNoFill();
-	//ofSetColor(0);
-	//ofDrawRectangle(0, 0, buffer.getWidth(), buffer.getHeight());
-	//ofSetLineWidth(5);
-	//ofDrawRectangle(0, buffer.getHeight() / 4.0, buffer.getWidth(), buffer.getHeight() / 2.0);
-	//ofPopStyle();
-	//buffer.end();
-
-	//buffer.draw(0, 0, buffer.getWidth() / 2, buffer.getHeight() / 2);
 }
 
 //--------------------------------------------------------------
