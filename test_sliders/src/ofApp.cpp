@@ -186,7 +186,7 @@ void ofApp::startWinningSpin() {
 //--------------------------------------------------------------
 void ofApp::startAlmostWinningSpin() {
 	int colIndex = int(ofRandom(5));
-	int imgIndex = int(ofRandom(1, productImages.size()));
+	int imgIndex = int(ofRandom(0, productImages.size()));
 	for (int i = 0; i < panelColumns.size(); i++) {
 		if (i == panelColumns.size() - 1) {
 			int newColIndex = int(ofRandom(5));
@@ -225,7 +225,7 @@ void ofApp::startGrandPrizeSpin() {
 //--------------------------------------------------------------
 void ofApp::startLosingSpin() {
 	int colIndex = int(ofRandom(5));
-	int imgIndex = int(ofRandom(1, productImages.size()));
+	int imgIndex = int(ofRandom(0, productImages.size()));
 	for (int i = 0; i < panelColumns.size(); i++) {
 		int newColIndex = int(ofRandom(5));
 		int newImgIndex = int(ofRandom(1, productImages.size()));
