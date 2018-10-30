@@ -32,8 +32,8 @@ void Panel::draw() {
 	float scale = height / img->getHeight();
 	float imgWidth = img->getWidth() * scale;
 	float imgHeight = height;
-	img->draw((width - imgWidth) / 2.0, (height - imgHeight) / 2.0, imgWidth, imgHeight);
 	ofSetColor(255);
+	img->draw((width - imgWidth) / 2.0, (height - imgHeight) / 2.0, imgWidth, imgHeight);
 	ofNoFill();
 	ofSetColor(0);
 	ofDrawRectangle(ofVec2f(0, 0), width, height);
