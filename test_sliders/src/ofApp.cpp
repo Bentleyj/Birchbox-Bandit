@@ -218,24 +218,28 @@ void ofApp::startLosingSpin() {
 void ofApp::keyPressed(int key){
 	sparticles.killAllSparticles();
 	grandPrizeSparticles.killAllSparticles();
+
 	if (key == ' ') {
-		numSpins++;
-		if (ofRandom(1) > 1.0 - gpChance) {
-			startGrandPrizeSpin();
-			numGrandPrizes++;
-		} else {
-			if (ofRandom(1) > winChance) {
-				if (ofRandom(1) > 0.4) {
-					startLosingSpin();
-				}
-				else {
-					startAlmostWinningSpin();
-				}
-				numLoses++;
+		if (!spinning) {
+			numSpins++;
+			if (ofRandom(1) > 1.0 - gpChance) {
+				startGrandPrizeSpin();
+				numGrandPrizes++;
 			}
 			else {
-				startWinningSpin();
-				numNormalWins++;
+				if (ofRandom(1) > winChance) {
+					if (ofRandom(1) > 0.4) {
+						startLosingSpin();
+					}
+					else {
+						startAlmostWinningSpin();
+					}
+					numLoses++;
+				}
+				else {
+					startWinningSpin();
+					numNormalWins++;
+				}
 			}
 		}
 	}
