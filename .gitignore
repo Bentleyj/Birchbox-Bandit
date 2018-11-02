@@ -113,3 +113,6 @@ ipch/
 *.cachefile
 *.VC.db
 *.VC.VC.opendb
+
+# Node Stuff
+node_modules/

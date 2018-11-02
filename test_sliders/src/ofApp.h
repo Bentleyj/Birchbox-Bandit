@@ -8,22 +8,22 @@
 struct PanelImage {
 	PanelImage() {
 		img = new ofImage();
-		sounds.resize(0);
+		videos.resize(0);
 	}
 	~PanelImage() {}
 	string name;
 	ofImage* img;
-	vector<ofSoundPlayer* > sounds;
-	ofSoundPlayer* getRandomSound() {
-		return sounds[ofRandom(0, sounds.size())];
+	vector<ofVideoPlayer* > videos;
+	ofVideoPlayer* getRandomVideo() {
+		return videos[ofRandom(0, videos.size())];
 	}
-	void playRandomSound() {
-		sounds[ofRandom(0, sounds.size())]->play();
+	void playRandomVideo() {
+		videos[ofRandom(0, videos.size())]->play();
 	}
 
 	void printState() {
 		cout << "Name: " << name << endl;
-		cout << "Num Sounds: " << sounds.size() << endl;
+		cout << "Num Sounds: " << videos.size() << endl;
 	}
 };
 
@@ -55,7 +55,7 @@ class ofApp : public ofBaseApp{
 
 		vector<PanelImage* > panelImages;
 
-		ofSoundPlayer* winSound;
+		ofVideoPlayer* winVideo;
 		ofSoundPlayer loseSound;
 		ofSoundPlayer spinningSound, spinningSound2;
 
@@ -65,6 +65,7 @@ class ofApp : public ofBaseApp{
 
 		bool winning;
 		bool spinning;
+		bool videoPlaying;
 
 		int numSpins;
 		int numNormalWins;

@@ -32,10 +32,10 @@ void ofApp::setup(){
 				pi->img->load(contentPaths[i]);
 				allImages.push_back(pi->img);
 			}
-			else if (fe == "wav" || fe == "mp3") {
-				ofSoundPlayer* p = new ofSoundPlayer();
+			else if (fe == "mov" || fe == "mp4") {
+				ofVideoPlayer* p = new ofVideoPlayer();
 				p->load(contentPaths[i]);
-				pi->sounds.push_back(p);
+				pi->videos.push_back(p);
 			}
 			panelImages.push_back(pi);
 		}
@@ -44,10 +44,10 @@ void ofApp::setup(){
 				pi->img->load(contentPaths[i]);
 				allImages.push_back(pi->img);
 			}
-			else if (fe == "wav" || fe == "mp3") {
-				ofSoundPlayer* p = new ofSoundPlayer();
+			else if (fe == "mov" || fe == "mp4") {
+				ofVideoPlayer* p = new ofVideoPlayer();
 				p->load(contentPaths[i]);
-				pi->sounds.push_back(p);
+				pi->videos.push_back(p);
 			}
 		}
 	}
@@ -100,12 +100,25 @@ void ofApp::update(){
 		}
 	}
 	if (winning && allStopped && spinning) {
-		winSound->play();
+		winVideo->play();
+		videoPlaying = true;
+		cout << "Playing Win Video!" << endl;
 		spinning = false;
 	}
 	else if (!winning && allStopped && spinning) {
 		loseSound.play();
 		spinning = false;
+	}
+	if (winVideo != nullptr) {
+		if (videoPlaying) {
+			winVideo->update();
+			if (winVideo->getCurrentFrame() >= winVideo->getTotalNumFrames() - 5) {
+				cout << "Stopped Video" << endl;
+				winVideo->setPosition(0);
+				winVideo->stop();
+				videoPlaying = false;
+			}
+		}
 	}
 }
 
@@ -134,6 +147,12 @@ void ofApp::draw() {
 		frame.draw(panelColumns[i]->emitter.pos.x, 0, buffer.getWidth()/3, buffer.getHeight());
 	}
 
+	if (winVideo != nullptr) {
+		if (videoPlaying) {
+			winVideo->draw(0, 0);
+		}
+	}
+
 	if (drawGui) {
 		int y = 10;
 		ofDrawBitmapStringHighlight("FPS: " + ofToString(ofGetFrameRate()), gui.getPosition().x + gui.getWidth(), y += 20);
@@ -151,7 +170,7 @@ void ofApp::draw() {
 void ofApp::startWinningSpin() {
 	int colIndex = int(ofRandom(5));
 	int imgIndex = int(ofRandom(0, panelImages.size()));
-	winSound = panelImages[imgIndex]->getRandomSound();
+	winVideo = panelImages[imgIndex]->getRandomVideo();
 	for (int i = 0; i < panelColumns.size(); i++) {
 		panelColumns[i]->spin(colIndex, panelImages[imgIndex]->img);
 	}
