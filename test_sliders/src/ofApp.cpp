@@ -213,89 +213,100 @@ void ofApp::startAlmostWinningSpin() {
 //--------------------------------------------------------------
 // This method kicks off a grand prize winning spin.
 void ofApp::startGrandPrizeSpin() {
-	int colIndex = int(ofRandom(5));
-	int imgIndex = 0;
+	int colIndex = int(ofRandom(5)); //  pick a random color
+	int imgIndex = 0; // pick the grand prize image.
 	for (int i = 0; i < panelColumns.size(); i++) {
-		panelColumns[i]->spin(colIndex, imgIndex);
+		panelColumns[i]->spin(colIndex, imgIndex); //  set all the panels spinning with the final panel as their grand prize image.
 	}
+	// set state booleans
 	spinning = true;
 	winning = true;
 	winningGrandPrize = true;
+	// play spin sound.
 	spinningSound.play();
 }
 
 
 //--------------------------------------------------------------
+// This method kicks off a losing spin. We need to amke sure that we select 3 DIFFERENT colors and images. We don't want to accidentally select the same ones.
 void ofApp::startLosingSpin() {
-	int colIndex = int(ofRandom(5));
-	int imgIndex = int(ofRandom(0, productImages.size()));
+	int colIndex = int(ofRandom(5)); // select an initial random color
+	int imgIndex = int(ofRandom(0, productImages.size())); // select initial random image.
 	for (int i = 0; i < panelColumns.size(); i++) {
-		int newColIndex = int(ofRandom(5));
-		int newImgIndex = int(ofRandom(1, productImages.size()));
-		if (colIndex == newColIndex) {
+		int newColIndex = int(ofRandom(5)); // select a new random color.
+		int newImgIndex = int(ofRandom(1, productImages.size())); // select a new random image.
+		if (colIndex == newColIndex) { // If our new random color is the same as our last one then select the next image instead.
 			colIndex = (newColIndex + 1) % 5;
 		}
-		if (imgIndex == newImgIndex) {
+		if (imgIndex == newImgIndex) { // If our new random color is the same as our last one then select the next image instead.
 			imgIndex = (newImgIndex + 1) % productImages.size();
 		}
-		else {
+		else { // If our randomly selected images and colors are not the same as the last ones then use the new ones.
 			colIndex = newColIndex;
 			imgIndex = newImgIndex;
 		}
-		panelColumns[i]->spin(colIndex, imgIndex);
+		panelColumns[i]->spin(colIndex, imgIndex); // set each panel spinning with a different final panel guaranteed.
 	}
+	// set our state booleans
 	spinning = true;
 	winning = false;
 	winningGrandPrize = false;
+	// play spinning sound.
 	spinningSound.play();
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+	// Whenever a key is pressed kill all the particles so our framerate looks good.
 	sparticles.killAllSparticles();
 	grandPrizeSparticles.killAllSparticles();
-
+	// Spacebar is our activator for a normal spin so here we handle the standard spin.
 	if (key == ' ') {
 		if (!spinning) {
-			numSpins++;
-			if (ofRandom(1) > 1.0 - gpChance) {
+			numSpins++; // keep statistics.
+			if (ofRandom(1) > 1.0 - gpChance) { // check for a grand prize!
 				startGrandPrizeSpin();
-				numGrandPrizes++;
+				numGrandPrizes++; // keep statistics.
 			}
 			else {
-				if (ofRandom(1) > winChance) {
-					if (ofRandom(1) > 0.4) {
+				if (ofRandom(1) > winChance) { // check for a loss.
+					if (ofRandom(1) > 0.4) { // If there's a loss we have a fixed % of the time that we do a losing vs. Almost winning spin.
 						startLosingSpin();
 					}
 					else {
 						startAlmostWinningSpin();
 					}
-					numLoses++;
+					numLoses++; // keep statistics.
 				}
-				else {
+				else { // if not a loss or grand prize then start a winning spin.
 					startWinningSpin();
-					numNormalWins++;
+					numNormalWins++; // keep statistics.
 				}
 			}
 		}
 	}
-	else if (key == 'w') {
+	else if (key == 'w') { // force a winning spin
 		startWinningSpin();
 	}
-	else if (key == 'g') {
+	else if (key == 'g') { // force a grand prize spin.
 		startGrandPrizeSpin();
 	}
-	else if (key == 'l') {
+	else if (key == 'l') { // force a losing spin.
 		startLosingSpin();
 	} 
-	else if (key == 's') {
+	else if (key == 's') { // hide/show the gui.
 		drawGui = !drawGui;
 	}
 }
 
 //--------------------------------------------------------------
+// This method is used to spawn all our particles. It populates the sparticles object with new values.
+// This should be called when a win or grand prize is finished spinning.
+// This takes 3 variables, a pointer to the sparticles object you want to spawn and manage sparticles with, a minimum delay value for when to spawn the sparticles
+// and a maximum delay value fo when to spawn the sparticles.
 void ofApp::spawnParticles(Sparticles* particles, float delayMin, float delayMax)
 {
+	// Make 1000 sparticles. See Sparticles.h and sparticles.cpp for more info on what variables these objects take.
 	for (int i = 0; i < 1000; i++) {
 		float maxRad = 50;
 		float r = ofRandom(maxRad);
@@ -305,9 +316,10 @@ void ofApp::spawnParticles(Sparticles* particles, float delayMin, float delayMax
 		float dir = ofRandom(0, 360);
 		float mag = 0;
 
+		// Randomly place the particles at one of three locations centered on the middle of each panel column.
 		if (ofRandom(1) > 0.5) {
 			offsetX = ofGetWidth() / 2;
-			mag = ofRandom(50, 80);
+			mag = ofRandom(50, 80); // middle panel column has the biggest explosion and the most sparticles.
 		}
 		else if (ofRandom(1) > 0.5) {
 			offsetX = ofGetWidth() / 6;
@@ -324,7 +336,7 @@ void ofApp::spawnParticles(Sparticles* particles, float delayMin, float delayMax
 		float dy = mag * sin(dir);
 		float dxx = 0.0;
 		float dyy = ofRandom(0.5, 2.0);
-		float delay = ofRandom(delayMin, delayMax);
+		float delay = ofRandom(delayMin, delayMax); // set a delay so all the sparticles don't shoot off at the same moment.
 		particles->spawn(x, y, dx, dy, dxx, dyy, delay);
 	}
 }
