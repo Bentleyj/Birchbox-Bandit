@@ -160,10 +160,10 @@ void ofApp::draw() {
 				y += h;
 				if (y > ofGetHeight()) {
 					x += w;
-					y = 0;
+					float d = ofGetHeight() - (y - h);
+					y = -d;
 				}
 			}
-
 		}
 	}
 
