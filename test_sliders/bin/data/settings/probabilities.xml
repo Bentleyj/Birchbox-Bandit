@@ -1,4 +1,5 @@
 <group>
-	<Win_Chance>0.5</Win_Chance>
-	<Grand_Prize_Chance>0.01</Grand_Prize_Chance>
+	<Win_Chance>0.8</Win_Chance>
+	<Grand_Prize_Chance>0.1</Grand_Prize_Chance>
+<group/>
 </group>
