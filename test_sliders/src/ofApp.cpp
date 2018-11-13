@@ -9,7 +9,7 @@ void ofApp::setup(){
 	panelWidth = ofGetWidth() / 3.0;
 	panelHeight = ofGetHeight() / 2.0;
 
-	frame.load("images/Frames/Frame_with Colours.png");
+	frame.load("images/Frames/DLX Frame.png");
 
 	fade.load("shaders/fade");
 
@@ -60,8 +60,8 @@ void ofApp::setup(){
 
 	loseSound.load("sounds/No Win/342886__michael-kur95__time-s-up-03.wav");
 	loseSound.setVolume(0.2);
-	spinningSound.load("sounds/Tension Builder/TensionBuildBongosSlotButton2.wav");
-	spinningSound.setVolume(0.2);
+	spinningSound.load("sounds/bongo_roll.wav");
+	spinningSound.setVolume(0.5);
 
 	buffer.allocate(ofGetWidth(), ofGetHeight());
 	PanelColumn* col1 = new PanelColumn();
@@ -81,6 +81,8 @@ void ofApp::setup(){
 		panelColumns[i]->emitter.images = &allImages;
 		panelColumns[i]->spinDuration = 2.0 + i;
 		panelColumns[i]->stopSound.load("sounds/Clicks/chip_money.mp3");
+		panelColumns[i]->stopSound.setVolume(0.5);
+
 		panelColumns[i]->frame = &frame;
 	}
 
@@ -116,7 +118,7 @@ void ofApp::update(){
 	}
 	if (winVideo != nullptr) {
 		if (videoPlaying) {
-			videoAlpha = ofLerp(videoAlpha, 255.0, 0.1);
+			videoAlpha = ofLerp(videoAlpha, 255.0, 0.05);
 			winVideo->update();
 			if (winVideo->getCurrentFrame() >= winVideo->getTotalNumFrames() - 5) {
 				winVideo->setPosition(0);
@@ -126,7 +128,7 @@ void ofApp::update(){
 		}
 	}
 	if (!videoPlaying) {
-		videoAlpha = ofLerp(videoAlpha, 0.0, 0.1);
+		videoAlpha = ofLerp(videoAlpha, 0.0, 0.05);
 	}
 }
 
