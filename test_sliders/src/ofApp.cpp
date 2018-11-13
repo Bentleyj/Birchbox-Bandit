@@ -70,16 +70,17 @@ void ofApp::setup(){
 		panelColumns[i]->createPanel();
 	}
 
+	// Setup our gui.
 	string settingsPath = "settings/probabilities.xml";
 	gui.setup("Probability", settingsPath);
 	gui.add(winChance.set("Win Chance", 0.5, 0.0, 1.0));
 	gui.add(gpChance.set("Grand Prize Chance", 0.01, 0.0, 0.1));
 	gui.loadFromFile(settingsPath);
-	//panelColumns[2]->emitter.spawnSound.load("sounds/Clicks/click 2.wav");
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
+	// Work out if all the panels have stopped.
 	bool allStopped = true;
 	for (int i = 0; i < panelColumns.size(); i++) {
 		panelColumns[i]->update();
@@ -87,52 +88,64 @@ void ofApp::update(){
 			allStopped = false;
 		}
 	}
+	// Check if we've finished a winning spin.
 	if (winning && allStopped && spinning) {
+		// Chekc if we won the grand prize!
 		if (winningGrandPrize) {
 			winSound.play();
 			grandPrizeSound.play();
 			spawnParticles(&grandPrizeSparticles, 40, 40);
 		}
+		// If not a grand prize we've won a normal prize.
 		else {
 			winSound.play();
 			spawnParticles(&sparticles, 40, 40);
 		}
-
+		// Set spinning to false to note that we've finished a spin and are waiting for a new button press.
 		spinning = false;
 	}
+	// If not we've finished a losing spin
 	else if (!winning && allStopped && spinning) {
 		loseSound.play();
+		// Set spinning to false to note that we've finished a spin and are waiting for a new button press.
 		spinning = false;
 	}
 
+	// Update our particles so they move across the screen.
 	sparticles.update();
 	grandPrizeSparticles.update();
 }
 
 //--------------------------------------------------------------
 void ofApp::draw() {
+	// Start our buffer in to which we will draw our panel columns.
 	buffer.begin();
 	ofClear(0);
 	ofPushMatrix();
+	// draw our panel columns in to our buffer
 	for (int i = 0; i < panelColumns.size(); i++) {
 		panelColumns[i]->draw();
 	}
 	ofPopMatrix();
 	buffer.end();
 
+	// apply our fade effect to our buffer.
 	fade.begin();
 	fade.setUniformTexture("inputTexture", buffer.getTexture(), 0);
 	fade.setUniform2f("resolution", buffer.getWidth(), buffer.getHeight());
 	ofDrawRectangle(0, 0, buffer.getWidth(), buffer.getHeight());
 	fade.end();
 
+	// draw our particles on top of the fade.
 	sparticles.draw(2.0, 2.0);
 	grandPrizeSparticles.draw(2.0, 2.0);
 
+	// Draw our outer frame 3 times on top of each panelColumn and on top of the particles.
 	for (int i = 0; i < panelColumns.size(); i++) {
 		frame.draw(panelColumns[i]->emitter.pos.x, 0, buffer.getWidth()/3, buffer.getHeight());
 	}
 
+	// Draw our gui and statistics if necessary.
 	if (drawGui) {
 		int y = 10;
 		ofDrawBitmapStringHighlight("FPS: " + ofToString(ofGetFrameRate()), gui.getPosition().x + gui.getWidth(), y += 20);
@@ -149,9 +162,10 @@ void ofApp::draw() {
 }
 
 //--------------------------------------------------------------
+// This method kicks off a winning spin.
 void ofApp::startWinningSpin() {
-	int colIndex = int(ofRandom(5));
-	int imgIndex = int(ofRandom(1, productImages.size()));
+	int colIndex = int(ofRandom(5)); // pick a random color
+	int imgIndex = int(ofRandom(1, productImages.size())); // pick a random image.
 	for (int i = 0; i < panelColumns.size(); i++) {
 		panelColumns[i]->spin(colIndex, imgIndex);
 	}
