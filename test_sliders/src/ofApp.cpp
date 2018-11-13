@@ -165,21 +165,28 @@ void ofApp::draw() {
 // This method kicks off a winning spin.
 void ofApp::startWinningSpin() {
 	int colIndex = int(ofRandom(5)); // pick a random color
-	int imgIndex = int(ofRandom(1, productImages.size())); // pick a random image.
+	int imgIndex = int(ofRandom(1, productImages.size())); // pick a random image. (not the grand prize image)
 	for (int i = 0; i < panelColumns.size(); i++) {
-		panelColumns[i]->spin(colIndex, imgIndex);
+		panelColumns[i]->spin(colIndex, imgIndex); // Tell the each panel Column to spin with the a matching color and image.
 	}
+	// set state booleans
 	spinning = true;
 	winning = true;
 	winningGrandPrize = false;
+
+	// play our spinning sound.
 	spinningSound.play();
 }
 
 //--------------------------------------------------------------
+// This method kicks off an "Almost" winning spin. This means that the first two panels will be identical but the third one will be different.
+// We want to manually force this because otherwise the chance of this happening is quite rare, so you basically know once the second image has come up wether or not
+// You will be a winner. This means you need to wait for the last panel to know if you've won.
 void ofApp::startAlmostWinningSpin() {
-	int colIndex = int(ofRandom(5));
-	int imgIndex = int(ofRandom(0, productImages.size()));
+	int colIndex = int(ofRandom(5)); // pick and random color.
+	int imgIndex = int(ofRandom(0, productImages.size())); // pick a random image (could be the grand prize image)
 	for (int i = 0; i < panelColumns.size(); i++) {
+		// If its the third panel pick a different image and color.
 		if (i == panelColumns.size() - 1) {
 			int newColIndex = int(ofRandom(5));
 			int newImgIndex = int(ofRandom(productImages.size()));
@@ -192,15 +199,19 @@ void ofApp::startAlmostWinningSpin() {
 			colIndex = newColIndex;
 			imgIndex = newImgIndex;
 		}
-		panelColumns[i]->spin(colIndex, imgIndex);
+		panelColumns[i]->spin(colIndex, imgIndex); // Start the spin on each panel with the same image and color for the first two and a different one for the third.
 	}
+	// set state booleans
 	spinning = true;
 	winning = false;
 	winningGrandPrize = false;
+
+	// Play spinning sound.
 	spinningSound.play();
 }
 
 //--------------------------------------------------------------
+// This method kicks off a grand prize winning spin.
 void ofApp::startGrandPrizeSpin() {
 	int colIndex = int(ofRandom(5));
 	int imgIndex = 0;
