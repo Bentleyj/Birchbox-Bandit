@@ -4,6 +4,8 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
 
+	ofHideCursor();
+
 	panelWidth = ofGetWidth() / 3.0;
 	panelHeight = ofGetHeight() / 2.0;
 
