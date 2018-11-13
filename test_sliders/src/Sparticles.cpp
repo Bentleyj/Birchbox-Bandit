@@ -127,6 +127,7 @@ void Sparticles::draw(float xFactor, float yFactor){
     ofPopStyle();
 }
 
+// This sets the position, acceleration, velicty, image and delay of the "next" particle and increments the next particle index.
 void Sparticles::spawn(float x, float y, float dx, float dy, float ddx, float ddy, float _delay){
     ages[pos] = 0;
     positions[pos] = ofVec2f(x, y);

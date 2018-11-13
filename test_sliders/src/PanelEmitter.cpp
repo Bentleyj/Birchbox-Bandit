@@ -47,6 +47,7 @@ Panel* PanelEmitter::createPanel() {
 	return p;
 }
 
+// Create a panel with a specific color and image.
 Panel* PanelEmitter::createPanel(int colIndex, int imgIndex) {
 	Panel* p = new Panel();
 

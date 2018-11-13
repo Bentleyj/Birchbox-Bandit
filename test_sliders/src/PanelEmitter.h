@@ -1,7 +1,7 @@
 #pragma once
 
 // A Panel Emitter creates new panels that go in to the panel column. It contains a list of all the colors
-// And images that a panel can have and creates them randomly or in winning order.
+// And images that a panel can have and creates them randomly or in a specific order.
 
 #include "ofMain.h"
 #include "Panel.h"
