@@ -14,11 +14,17 @@ struct PanelImage {
 	string name;
 	ofImage* img;
 	vector<ofVideoPlayer* > videos;
+	int videoIndex = 0;
 	ofVideoPlayer* getRandomVideo() {
 		return videos[ofRandom(0, videos.size())];
 	}
 	void playRandomVideo() {
 		videos[ofRandom(0, videos.size())]->play();
+	}
+	ofVideoPlayer* getNextVideo() {
+		videoIndex++;
+		videoIndex %= videos.size();
+		return videos[videoIndex];
 	}
 
 	void printState() {

@@ -188,7 +188,7 @@ void ofApp::draw() {
 void ofApp::startWinningSpin() {
 	int colIndex = int(ofRandom(5));
 	int imgIndex = int(ofRandom(0, panelImages.size()));
-	winVideo = panelImages[imgIndex]->getRandomVideo();
+	winVideo = panelImages[imgIndex]->getNextVideo();
 	for (int i = 0; i < panelColumns.size(); i++) {
 		panelColumns[i]->spin(colIndex, panelImages[imgIndex]->img);
 	}
