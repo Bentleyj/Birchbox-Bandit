@@ -57,7 +57,9 @@ void ofApp::setup(){
 	}
 
 	loseSound.load("sounds/No Win/342886__michael-kur95__time-s-up-03.wav");
+	loseSound.setVolume(0.2);
 	spinningSound.load("sounds/Tension Builder/TensionBuildBongosSlotButton2.wav");
+	spinningSound.setVolume(0.2);
 
 	buffer.allocate(ofGetWidth(), ofGetHeight());
 	PanelColumn* col1 = new PanelColumn();
