@@ -23,7 +23,7 @@ struct PanelImage {
 
 	void printState() {
 		cout << "Name: " << name << endl;
-		cout << "Num Sounds: " << videos.size() << endl;
+		cout << "Num Videos: " << videos.size() << endl;
 	}
 };
 
@@ -79,6 +79,7 @@ class ofApp : public ofBaseApp{
 		ofxPanel gui;
 
 		ofParameter<float> winChance;
+		ofParameter<float> videoAlpha;
 
 		ofFbo buffer, fullScreen;
 };

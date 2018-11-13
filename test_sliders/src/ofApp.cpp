@@ -87,6 +87,7 @@ void ofApp::setup(){
 	string settingsPath = "settings/probabilities.xml";
 	gui.setup("Probability", settingsPath);
 	gui.add(winChance.set("Win Chance", 0.5, 0.0, 1.0));
+	gui.add(videoAlpha.set("Video Alpha", 0.0, 0.0, 255.0));
 	gui.loadFromFile(settingsPath);
 }
 
@@ -111,14 +112,17 @@ void ofApp::update(){
 	}
 	if (winVideo != nullptr) {
 		if (videoPlaying) {
+			videoAlpha = ofLerp(videoAlpha, 255.0, 0.1);
 			winVideo->update();
 			if (winVideo->getCurrentFrame() >= winVideo->getTotalNumFrames() - 5) {
-				cout << "Stopped Video" << endl;
 				winVideo->setPosition(0);
 				winVideo->stop();
 				videoPlaying = false;
 			}
 		}
+	}
+	if (!videoPlaying) {
+		videoAlpha = ofLerp(videoAlpha, 0.0, 0.1);
 	}
 }
 
@@ -143,14 +147,28 @@ void ofApp::draw() {
 	ofDrawRectangle(0, 0, buffer.getWidth(), buffer.getHeight());
 	fade.end();
 
-	for (int i = 0; i < panelColumns.size(); i++) {
-		frame.draw(panelColumns[i]->emitter.pos.x, 0, buffer.getWidth()/3, buffer.getHeight());
-	}
-
 	if (winVideo != nullptr) {
 		if (videoPlaying) {
-			winVideo->draw(0, 0);
+			ofSetColor(255, videoAlpha);
+			float x = 0;
+			float y = 0;
+			while (x < ofGetWidth()) {
+				float w = ofGetWidth() / 3.0;
+				float scale = w / winVideo->getWidth();
+				float h = winVideo->getHeight() * scale;
+				winVideo->draw(x, y, w, h);
+				y += h;
+				if (y > ofGetHeight()) {
+					x += w;
+					y = 0;
+				}
+			}
+
 		}
+	}
+
+	for (int i = 0; i < panelColumns.size(); i++) {
+		frame.draw(panelColumns[i]->emitter.pos.x, 0, buffer.getWidth()/3, buffer.getHeight());
 	}
 
 	if (drawGui) {
@@ -230,6 +248,11 @@ void ofApp::startLosingSpin() {
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
 	if (key == ' ') {
+		if (winVideo != nullptr) {
+			winVideo->setPosition(0);
+			winVideo->stop();
+			videoPlaying = false;
+		}
 		numSpins++;
 		if (ofRandom(1) > winChance) {
 			if (ofRandom(1) > 0.4) {
