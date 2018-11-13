@@ -109,7 +109,6 @@ void ofApp::update(){
 	if (winning && allStopped && spinning) {
 		winVideo->play();
 		videoPlaying = true;
-		cout << "Playing Win Video!" << endl;
 		spinning = false;
 	}
 	else if (!winning && allStopped && spinning) {
