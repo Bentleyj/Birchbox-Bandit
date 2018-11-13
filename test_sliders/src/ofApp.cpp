@@ -137,10 +137,6 @@ void ofApp::draw() {
 	ofPopMatrix();
 	buffer.end();
 
-	//buffer.draw(0, 0);
-
-	//ofDrawBitmapStringHighlight("FPS: " + ofToString(ofGetFrameRate()), 10, 10);
-
 	fade.begin();
 	fade.setUniformTexture("inputTexture", buffer.getTexture(), 0);
 	fade.setUniform2f("resolution", buffer.getWidth(), buffer.getHeight());
