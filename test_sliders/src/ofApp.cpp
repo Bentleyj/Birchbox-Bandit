@@ -3,38 +3,47 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-
+	// Hide the cursor when it is over our frame.
 	ofHideCursor();
 
+	// Set the panel width and panel height (THESE VALUES ARE IMPORTANT AND WILL CHANGE WHERE THE IMAGES STOP AFTER A SPIN!)
+	// Todo: Remove the importance of these.
 	panelWidth = ofGetWidth() / 3.0;
 	panelHeight = ofGetHeight() / 2.0;
 
+	// Setup our two different sets of particles by passing them different particles images.
 	sparticles.setup("images/particles");
 	grandPrizeSparticles.setup("images/GrandPrizeParticles");
 
+	// Load our frame image for the frame around the outside.
 	frame.load("images/Frames/Asset 3.png");
 
+	// load our fade shader,
 	fade.load("shaders/fade");
 
+	// load all the product images and push them back on to the list of product image pointers.
 	ofxNestedFileLoader loader;
 	vector<string> imgPaths = loader.load("productImages");
-	string grandPrize = "Win Coin B.png";
+	string grandPrize = "Win Coin B.png"; // Load our grand prize image separately.
 	ofImage* img = new ofImage();
-	img->load(grandPrize);
-	productImages.push_back(img);
-
+	img->load(grandPrize);  
+	productImages.push_back(img); // make the grand prize image the first on our list of images so we can easily ignore it when selecting a random prize.
 	for (int i = 0; i < imgPaths.size(); i++) {
 		ofImage* img = new ofImage();
 		img->load(imgPaths[i]);
 		productImages.push_back(img);
 	}
 
+	// Load all our sounds.
 	winSound.load("sounds/Big Win/JackPot SFX 4 (MP3).mp3");
 	loseSound.load("sounds/No Win/342886__michael-kur95__time-s-up-03.wav");
 	grandPrizeSound.load("sounds/Grand Prize/MusicFanfare SME01_13.1.wav");	//spinningSound.load("sounds/Tension Builder/slot_machine_spin.mp3");
 	spinningSound.load("sounds/Tension Builder/TensionBuildBongosSlotButton2.wav");
 
+	// Allocate our draw buffer for our shader to act on.
 	buffer.allocate(ofGetWidth(), ofGetHeight());
+	
+	// Setup our three panel columns and push them back on to our vector.
 	PanelColumn* col1 = new PanelColumn();
 	PanelColumn* col2 = new PanelColumn();
 	PanelColumn* col3 = new PanelColumn();
@@ -43,6 +52,7 @@ void ofApp::setup(){
 	panelColumns.push_back(col2);
 	panelColumns.push_back(col3);
 
+	// setup each panel column, I've avoided a magic number here so everything is clear but you could wrap the above lines in to this loop.
 	for (int i = 0; i < panelColumns.size(); i++) {
 		panelColumns[i]->emitter.initialVel = ofVec2f(0, 200);
 		panelColumns[i]->emitter.pos = ofVec3f(i * panelWidth, -panelHeight * 1.5);
@@ -55,6 +65,7 @@ void ofApp::setup(){
 		panelColumns[i]->frame = &frame;
 	}
 
+	// Kick off panel creation. If each panel column creates an initial panel at the beginning they will then start cascading.
 	for (int i = 0; i < panelColumns.size(); i++) {
 		panelColumns[i]->createPanel();
 	}

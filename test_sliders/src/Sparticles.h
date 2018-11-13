@@ -26,6 +26,8 @@
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// This is our particle system for the project that manages all of the particles.
+
 
 #pragma once
 
