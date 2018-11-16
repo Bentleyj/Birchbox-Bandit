@@ -20,6 +20,7 @@ void ofApp::setup(){
 		vector<string> fs = loader.getFolderStructure(contentPaths[i]);
 		string fe = loader.getFileExtension(contentPaths[i]);
 		string name = fs[1];
+		cout << "Loading File: " << contentPaths[i] << endl;
 		PanelImage* pi = nullptr;
 		for (int i = 0; i < panelImages.size(); i++) {
 			if (name == panelImages[i]->name) {
@@ -35,9 +36,7 @@ void ofApp::setup(){
 				allImages.push_back(pi->img);
 			}
 			else if (fe == "mov" || fe == "mp4") {
-				ofVideoPlayer* p = new ofVideoPlayer();
-				p->load(contentPaths[i]);
-				pi->videos.push_back(p);
+				pi->videos.push_back(contentPaths[i]);
 			}
 			panelImages.push_back(pi);
 		}
@@ -47,9 +46,7 @@ void ofApp::setup(){
 				allImages.push_back(pi->img);
 			}
 			else if (fe == "mov" || fe == "mp4") {
-				ofVideoPlayer* p = new ofVideoPlayer();
-				p->load(contentPaths[i]);
-				pi->videos.push_back(p);
+				pi->videos.push_back(contentPaths[i]);
 			}
 		}
 	}
@@ -95,6 +92,8 @@ void ofApp::setup(){
 	gui.add(winChance.set("Win Chance", 0.5, 0.0, 1.0));
 	gui.add(videoAlpha.set("Video Alpha", 0.0, 0.0, 255.0));
 	gui.loadFromFile(settingsPath);
+
+	imgIndex = 0;
 }
 
 //--------------------------------------------------------------
@@ -107,24 +106,28 @@ void ofApp::update(){
 		}
 	}
 	if (winning && allStopped && spinning) {
-		winVideo->play();
-		videoPlaying = true;
-
+		spinStopTime = ofGetElapsedTimef();
+		loading = true;
 		spinning = false;
 	}
 	else if (!winning && allStopped && spinning) {
 		loseSound.play();
+		loading = false;
 		spinning = false;
 	}
-	if (winVideo != nullptr) {
-		if (videoPlaying) {
-			videoAlpha = ofLerp(videoAlpha, 255.0, 0.05);
-			winVideo->update();
-			if (winVideo->getCurrentFrame() >= winVideo->getTotalNumFrames() - 5) {
-				winVideo->setPosition(0);
-				winVideo->stop();
-				videoPlaying = false;
-			}
+	if (loading && ofGetElapsedTimef() - spinStopTime > loadDelay) {
+		winVideo.load(panelImages[imgIndex]->getNextVideo());
+		winVideo.play();
+		loading = false;
+		videoPlaying = true;
+	}
+	if (videoPlaying) {
+		videoAlpha = ofLerp(videoAlpha, 255.0, 0.05);
+		winVideo.update();
+		if (winVideo.getCurrentFrame() >= winVideo.getTotalNumFrames() - 5) {
+			winVideo.setPosition(0);
+			winVideo.stop();
+			videoPlaying = false;
 		}
 	}
 	if (!videoPlaying) {
@@ -149,22 +152,20 @@ void ofApp::draw() {
 	ofDrawRectangle(0, 0, buffer.getWidth(), buffer.getHeight());
 	fade.end();
 
-	if (winVideo != nullptr) {
-		if (videoPlaying) {
-			ofSetColor(255, videoAlpha);
-			float x = 0;
-			float y = 0;
-			while (x < ofGetWidth()) {
-				float w = ofGetWidth() / 3.0;
-				float scale = w / winVideo->getWidth();
-				float h = winVideo->getHeight() * scale;
-				winVideo->draw(x, y, w, h);
-				y += h;
-				if (y > ofGetHeight()) {
-					x += w;
-					float d = ofGetHeight() - (y - h);
-					y = -d;
-				}
+	if (videoPlaying) {
+		ofSetColor(255, videoAlpha);
+		float x = 0;
+		float y = 0;
+		while (x < ofGetWidth()) {
+			float w = ofGetWidth() / 3.0;
+			float scale = w / winVideo.getWidth();
+			float h = winVideo.getHeight() * scale;
+			winVideo.draw(x, y, w, h);
+			y += h;
+			if (y > ofGetHeight()) {
+				x += w;
+				float d = ofGetHeight() - (y - h);
+				y = -d;
 			}
 		}
 	}
@@ -189,8 +190,8 @@ void ofApp::draw() {
 //--------------------------------------------------------------
 void ofApp::startWinningSpin() {
 	int colIndex = int(ofRandom(5));
-	int imgIndex = int(ofRandom(0, panelImages.size()));
-	winVideo = panelImages[imgIndex]->getNextVideo();
+	imgIndex = int(ofRandom(0, panelImages.size()));
+	winVideo.close();
 	for (int i = 0; i < panelColumns.size(); i++) {
 		panelColumns[i]->spin(colIndex, panelImages[imgIndex]->img);
 	}
@@ -250,11 +251,9 @@ void ofApp::startLosingSpin() {
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
 	if (key == ' ') {
-		if (winVideo != nullptr) {
-			winVideo->setPosition(0);
-			winVideo->stop();
-			videoPlaying = false;
-		}
+		winVideo.setPosition(0);
+		winVideo.stop();
+		videoPlaying = false;
 		numSpins++;
 		if (ofRandom(1) > winChance) {
 			if (ofRandom(1) > 0.4) {

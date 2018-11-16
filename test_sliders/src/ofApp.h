@@ -13,15 +13,9 @@ struct PanelImage {
 	~PanelImage() {}
 	string name;
 	ofImage* img;
-	vector<ofVideoPlayer* > videos;
+	vector<string> videos;
 	int videoIndex = 0;
-	ofVideoPlayer* getRandomVideo() {
-		return videos[ofRandom(0, videos.size())];
-	}
-	void playRandomVideo() {
-		videos[ofRandom(0, videos.size())]->play();
-	}
-	ofVideoPlayer* getNextVideo() {
+	string getNextVideo() {
 		videoIndex++;
 		videoIndex %= videos.size();
 		return videos[videoIndex];
@@ -61,7 +55,7 @@ class ofApp : public ofBaseApp{
 
 		vector<PanelImage* > panelImages;
 
-		ofVideoPlayer* winVideo;
+		ofVideoPlayer winVideo;
 		ofSoundPlayer loseSound;
 		ofSoundPlayer spinningSound, spinningSound2;
 
@@ -81,6 +75,12 @@ class ofApp : public ofBaseApp{
 		float panelWidth;
 
 		bool drawGui = false;
+
+		int imgIndex;
+
+		float loadDelay = 0.5;
+		bool loading;
+		float spinStopTime;
 
 		ofxPanel gui;
 
