@@ -109,6 +109,7 @@ void ofApp::update(){
 	if (winning && allStopped && spinning) {
 		winVideo->play();
 		videoPlaying = true;
+
 		spinning = false;
 	}
 	else if (!winning && allStopped && spinning) {
